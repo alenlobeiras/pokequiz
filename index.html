@@ -48,8 +48,8 @@
     }
 
     #sprite-display {
-      width: 200px;
-      height: 200px;
+      width: 300px;
+      height: 300px;
       object-fit: contain;
       image-rendering: pixelated;
       image-rendering: crisp-edges;
@@ -183,7 +183,8 @@ const COLOR_GROUP = [
 // ── Config ────────────────────────────────────────────────────────────────────
 const QUESTIONS_N    = 10;
 const MAX_REVEALS    = 10;
-const PTS_PER_REVEAL = 10;    // -10p per click
+const PTS_PER_REVEAL  = 20;   // -20p per hint click
+const PTS_CORRECT_BONUS = 20; // +20p bonus for answering correctly
 
 // ── Game state ────────────────────────────────────────────────────────────────
 let questions = [], currentQ = 0, totalScore = 0;
@@ -253,7 +254,7 @@ function showQuestion() {
   mb.disabled    = false;
   mb.onclick     = onRevealClick;
 
-  document.getElementById('score-text').textContent = 'Score: 100p';
+  document.getElementById('score-text').textContent = 'Score: ' + totalScore + 'p';
 }
 
 function onRevealClick() {
@@ -270,7 +271,7 @@ function onRevealClick() {
   } else {
     mb.textContent = revealStep + '/10';
   }
-  document.getElementById('score-text').textContent = 'Score: ' + questionScore + 'p';
+  document.getElementById('score-text').textContent = 'Score: ' + totalScore + 'p  (+' + questionScore + 'p available)';
 }
 
 document.querySelectorAll('.choice').forEach(btn => {
@@ -284,11 +285,12 @@ document.querySelectorAll('.choice').forEach(btn => {
 function revealResult(chosenId) {
   answered = true;
   const correctId  = questions[currentQ].id;
-  const earned     = chosenId === correctId ? questionScore : 0;
+  const isCorrect  = chosenId === correctId;
+  const earned     = isCorrect ? questionScore + PTS_CORRECT_BONUS : 0;
   totalScore      += earned;
 
   setReveal(1);
-  document.getElementById('score-text').textContent = 'Score: ' + earned + 'p';
+  document.getElementById('score-text').textContent = 'Score: ' + totalScore + 'p  (+' + earned + 'p)';
 
   document.querySelectorAll('.choice').forEach(btn => {
     const bid = parseInt(btn.getAttribute('data-id'));
@@ -311,7 +313,7 @@ function nextQuestion() {
 }
 
 function showEndScreen() {
-  const max = QUESTIONS_N * 100;
+  const max = QUESTIONS_N * (100 + PTS_CORRECT_BONUS); // 1200p max
   const pct = Math.round(totalScore / max * 100);
   document.getElementById('game').innerHTML = `
     <div id="end-screen">
