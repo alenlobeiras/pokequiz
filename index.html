@@ -12,11 +12,7 @@
       font-style: normal;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       background: #000;
@@ -38,24 +34,26 @@
     }
 
     #title {
-      font-size: 20px;
+      font-size: 24px;
       text-align: center;
       line-height: 1.6;
       width: 100%;
     }
 
     #sprite-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
       height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     #sprite-display {
-      background-image: url('1.png');
-      background-repeat: no-repeat;
+      width: 200px;
+      height: 200px;
+      object-fit: contain;
       image-rendering: pixelated;
       image-rendering: crisp-edges;
+      display: block;
     }
 
     #main-btn {
@@ -65,20 +63,15 @@
       padding: 16px;
       border-radius: 8px;
       text-align: center;
-      font-size: 20px;
+      font-size: 24px;
       font-family: 'Tamago', monospace;
       border: none;
       cursor: pointer;
       min-height: 60px;
     }
 
-    #main-btn:hover:not(:disabled) {
-      background: #ddd;
-    }
-
-    #main-btn:disabled {
-      cursor: default;
-    }
+    #main-btn:hover:not(:disabled) { background: #ddd; }
+    #main-btn:disabled { cursor: default; opacity: 0.5; }
 
     #choices {
       display: flex;
@@ -93,43 +86,22 @@
       background: transparent;
       color: #fff;
       font-family: 'Tamago', monospace;
-      font-size: 9px;
-      padding: 6px 6px;
+      font-size: 16px;
+      padding: 4px 6px;
       border-radius: 4px;
       cursor: pointer;
-      line-height: 1.6;
-      min-height: 40px;
+      min-height: 35px;
+      line-height: 1.3;
     }
 
-    .choice:hover:not(:disabled) {
-      background: rgba(255, 255, 255, 0.1);
-    }
+    .choice:hover:not(:disabled) { background: rgba(255,255,255,0.1); }
+    .choice:disabled { cursor: default; }
+    .choice.correct { border: 2px solid #15d000 !important; color: #15d000 !important; }
+    .choice.wrong   { border: 2px solid #ff3333 !important; color: #ff3333 !important; }
+    .choice.dim     { opacity: 0.3; }
 
-    .choice:disabled {
-      cursor: default;
-    }
+    #score-text { font-size: 14px; text-align: center; width: 100%; }
 
-    .choice.correct {
-      border: 2px solid #15d000 !important;
-      color: #15d000 !important;
-    }
-
-    .choice.wrong {
-      border: 2px solid #ff3333 !important;
-      color: #ff3333 !important;
-    }
-
-    .choice.dim {
-      opacity: 0.3;
-    }
-
-    #score-text {
-      font-size: 14px;
-      text-align: center;
-      width: 100%;
-    }
-
-    /* End screen */
     #end-screen {
       text-align: center;
       display: flex;
@@ -137,279 +109,229 @@
       align-items: center;
       gap: 32px;
     }
-
-    #end-screen h2 {
-      font-size: 20px;
-      line-height: 1.8;
-    }
-
-    #end-screen .total-score {
-      font-size: 32px;
-    }
-
-    #end-screen .sub-score {
-      font-size: 13px;
-      opacity: 0.7;
-    }
-
-    #end-screen #main-btn {
-      width: auto;
-      padding: 16px 32px;
-    }
+    #end-screen h2   { font-size: 24px; line-height: 1.8; }
+    #end-screen .pts { font-size: 36px; }
+    #end-screen .sub { font-size: 14px; opacity: 0.7; }
+    #end-screen #main-btn { width: auto; padding: 16px 32px; }
   </style>
 </head>
 <body>
-  <div id="game">
-    <h1 id="title">Who's that pokemon?</h1>
-    <div id="sprite-container">
-      <div id="sprite-display"></div>
-    </div>
-    <button id="main-btn" disabled>...</button>
-    <div id="choices">
-      <button class="choice" data-id="0">-</button>
-      <button class="choice" data-id="0">-</button>
-      <button class="choice" data-id="0">-</button>
-    </div>
-    <p id="score-text">Score: 100p</p>
+<div id="game">
+  <h1 id="title">Who's that pokemon?</h1>
+  <div id="sprite-container">
+    <img id="sprite-display" src="" alt="">
   </div>
+  <button id="main-btn" disabled>0/10</button>
+  <div id="choices">
+    <button class="choice" data-id="0">-</button>
+    <button class="choice" data-id="0">-</button>
+    <button class="choice" data-id="0">-</button>
+  </div>
+  <p id="score-text">Score: 100p</p>
+</div>
 
-  <script>
-    const POKEMON = [
-      'Bulbasaur','Ivysaur','Venusaur','Charmander','Charmeleon','Charizard',
-      'Squirtle','Wartortle','Blastoise','Caterpie','Metapod','Butterfree',
-      'Weedle','Kakuna','Beedrill','Pidgey','Pidgeotto','Pidgeot',
-      'Rattata','Raticate','Spearow','Fearow','Ekans','Arbok',
-      'Pikachu','Raichu','Sandshrew','Sandslash','Nidoran F','Nidorina',
-      'Nidoqueen','Nidoran M','Nidorino','Nidoking','Clefairy','Clefable',
-      'Vulpix','Ninetales','Jigglypuff','Wigglytuff','Zubat','Golbat',
-      'Oddish','Gloom','Vileplume','Paras','Parasect','Venonat',
-      'Venomoth','Diglett','Dugtrio','Meowth','Persian','Psyduck',
-      'Golduck','Mankey','Primeape','Growlithe','Arcanine','Poliwag',
-      'Poliwhirl','Poliwrath','Abra','Kadabra','Alakazam','Machop',
-      'Machoke','Machamp','Bellsprout','Weepinbell','Victreebel','Tentacool',
-      'Tentacruel','Geodude','Graveler','Golem','Ponyta','Rapidash',
-      'Slowpoke','Slowbro','Magnemite','Magneton',"Farfetch'd",'Doduo',
-      'Dodrio','Seel','Dewgong','Grimer','Muk','Shellder',
-      'Cloyster','Gastly','Haunter','Gengar','Onix','Drowzee',
-      'Hypno','Krabby','Kingler','Voltorb','Electrode','Exeggcute',
-      'Exeggutor','Cubone','Marowak','Hitmonlee','Hitmonchan','Lickitung',
-      'Koffing','Weezing','Rhyhorn','Rhydon','Chansey','Tangela',
-      'Kangaskhan','Horsea','Seadra','Goldeen','Seaking','Staryu',
-      'Starmie','Mr. Mime','Scyther','Jynx','Electabuzz','Magmar',
-      'Pinsir','Tauros','Magikarp','Gyarados','Lapras','Ditto',
-      'Eevee','Vaporeon','Jolteon','Flareon','Porygon','Omanyte',
-      'Omastar','Kabuto','Kabutops','Aerodactyl','Snorlax','Articuno',
-      'Zapdos','Moltres','Dratini','Dragonair','Dragonite','Mewtwo','Mew'
-    ]; // 151 Gen 1 Pokemon
+<script>
+// Sprite URL por ID de Pokedex — garantiza que el sprite mostrado
+// siempre corresponde exactamente al pokemon de la pregunta.
+function spriteUrl(id) {
+  return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+}
 
-    const SHEET_COLS = 20;
-    const QUESTIONS_PER_GAME = 10;
-    const TIME_LIMIT = 10;
-    const DISPLAY_TARGET = 200; // target display width in px for each sprite
+// ── Pokemon names ─────────────────────────────────────────────────────────────
+const POKEMON = [
+  'Bulbasaur','Ivysaur','Venusaur','Charmander','Charmeleon','Charizard',
+  'Squirtle','Wartortle','Blastoise','Caterpie','Metapod','Butterfree',
+  'Weedle','Kakuna','Beedrill','Pidgey','Pidgeotto','Pidgeot',
+  'Rattata','Raticate','Spearow','Fearow','Ekans','Arbok',
+  'Pikachu','Raichu','Sandshrew','Sandslash','Nidoran F','Nidorina',
+  'Nidoqueen','Nidoran M','Nidorino','Nidoking','Clefairy','Clefable',
+  'Vulpix','Ninetales','Jigglypuff','Wigglytuff','Zubat','Golbat',
+  'Oddish','Gloom','Vileplume','Paras','Parasect','Venonat',
+  'Venomoth','Diglett','Dugtrio','Meowth','Persian','Psyduck',
+  'Golduck','Mankey','Primeape','Growlithe','Arcanine','Poliwag',
+  'Poliwhirl','Poliwrath','Abra','Kadabra','Alakazam','Machop',
+  'Machoke','Machamp','Bellsprout','Weepinbell','Victreebel','Tentacool',
+  'Tentacruel','Geodude','Graveler','Golem','Ponyta','Rapidash',
+  'Slowpoke','Slowbro','Magnemite','Magneton',"Farfetch'd",'Doduo',
+  'Dodrio','Seel','Dewgong','Grimer','Muk','Shellder',
+  'Cloyster','Gastly','Haunter','Gengar','Onix','Drowzee',
+  'Hypno','Krabby','Kingler','Voltorb','Electrode','Exeggcute',
+  'Exeggutor','Cubone','Marowak','Hitmonlee','Hitmonchan','Lickitung',
+  'Koffing','Weezing','Rhyhorn','Rhydon','Chansey','Tangela',
+  'Kangaskhan','Horsea','Seadra','Goldeen','Seaking','Staryu',
+  'Starmie','Mr. Mime','Scyther','Jynx','Electabuzz','Magmar',
+  'Pinsir','Tauros','Magikarp','Gyarados','Lapras','Ditto',
+  'Eevee','Vaporeon','Jolteon','Flareon','Porygon','Omanyte',
+  'Omastar','Kabuto','Kabutops','Aerodactyl','Snorlax','Articuno',
+  'Zapdos','Moltres','Dratini','Dragonair','Dragonite','Mewtwo','Mew'
+];
 
-    let spriteW = 0, spriteH = 0;
-    let displayW = 0, displayH = 0;
-    let sheetDisplayW = 0, sheetDisplayH = 0;
+// Color groups for chromatic wrong-answer selection
+// 0=fire/orange  1=water/blue  2=grass/green  3=yellow/electric
+// 4=pink/normal  5=purple/dark  6=gray/brown
+const COLOR_GROUP = [
+  2,2,2,0,0,0,1,1,1,2,2,4,6,3,3,6,6,6,5,6,
+  6,6,5,5,3,0,3,6,5,5,5,5,5,5,4,4,0,4,4,4,
+  5,5,1,1,0,0,0,5,5,6,6,4,4,3,1,4,4,0,0,1,
+  1,1,3,3,3,6,6,6,2,2,2,1,1,6,6,6,0,4,4,4,
+  6,6,6,6,6,4,4,5,5,5,6,5,5,5,6,6,3,0,0,0,
+  0,4,2,6,6,6,6,4,5,5,6,6,4,2,6,1,1,0,0,6,
+  5,4,2,5,3,0,6,6,0,1,1,5,6,1,3,0,4,1,1,6,
+  6,6,1,1,3,0,1,1,0,5,4
+];
 
-    // Game state
-    let questions = [];
-    let currentQ = 0;
-    let totalScore = 0;
-    let questionScore = 100;
-    let secondsElapsed = 0;
-    let timerInterval = null;
-    let answered = false;
+// ── Config ────────────────────────────────────────────────────────────────────
+const QUESTIONS_N    = 10;
+const MAX_REVEALS    = 10;
+const PTS_PER_REVEAL = 10;    // -10p per click
 
-    // ----- Sprite sheet loading -----
-    const sheetImg = new Image();
-    sheetImg.onload = function () {
-      const sheetRows = Math.ceil(POKEMON.length / SHEET_COLS);
-      spriteW = sheetImg.naturalWidth / SHEET_COLS;
-      spriteH = sheetImg.naturalHeight / sheetRows;
+// ── Game state ────────────────────────────────────────────────────────────────
+let questions = [], currentQ = 0, totalScore = 0;
+let revealStep = 0, questionScore = 100, answered = false;
 
-      const scale = DISPLAY_TARGET / spriteW;
-      displayW = Math.round(spriteW * scale);
-      displayH = Math.round(spriteH * scale);
-      sheetDisplayW = Math.round(sheetImg.naturalWidth * scale);
-      sheetDisplayH = Math.round(sheetImg.naturalHeight * scale);
+// ── Sprite helpers ────────────────────────────────────────────────────────────
+function setSpriteForPokemon(id) {
+  const el = document.getElementById('sprite-display');
+  el.src = spriteUrl(id);
+}
 
-      const el = document.getElementById('sprite-display');
-      el.style.width = displayW + 'px';
-      el.style.height = displayH + 'px';
-      el.style.backgroundSize = sheetDisplayW + 'px ' + sheetDisplayH + 'px';
+// ratio 0 = hidden (thin sliver), 1 = fully revealed
+function setReveal(ratio) {
+  const el = document.getElementById('sprite-display');
+  if (ratio >= 1) {
+    el.style.clipPath = 'none';
+  } else {
+    const effective = Math.max(0.04, ratio);
+    const clip = ((1 - effective) / 2 * 100).toFixed(1);
+    el.style.clipPath = `inset(0 ${clip}% 0 ${clip}%)`;
+  }
+}
 
-      startGame();
-    };
-    sheetImg.src = '1.png';
+// ── Game logic ────────────────────────────────────────────────────────────────
+function startGame() {
+  questions  = generateQuestions(QUESTIONS_N);
+  currentQ   = 0;
+  totalScore = 0;
+  showQuestion();
+}
 
-    // ----- Game logic -----
+function generateQuestions(n) {
+  const ids = Array.from({ length: POKEMON.length }, (_, i) => i + 1);
+  shuffle(ids);
+  return ids.slice(0, n).map(id => ({ id, choices: pickChoices(id) }));
+}
 
-    function startGame() {
-      questions = generateQuestions(QUESTIONS_PER_GAME);
-      currentQ = 0;
-      totalScore = 0;
-      showQuestion();
-    }
+function pickChoices(correctId) {
+  const g = COLOR_GROUP[correctId - 1];
+  const same = [], other = [];
+  for (let i = 1; i <= POKEMON.length; i++) {
+    if (i === correctId) continue;
+    (COLOR_GROUP[i - 1] === g ? same : other).push(i);
+  }
+  shuffle(same); shuffle(other);
+  const pool = same.length >= 2 ? same : [...same, ...other];
+  return shuffle([correctId, pool[0], pool[1]]);
+}
 
-    function generateQuestions(n) {
-      const allIds = Array.from({ length: POKEMON.length }, (_, i) => i + 1);
-      shuffle(allIds);
-      const selected = allIds.slice(0, n);
-      return selected.map(id => {
-        const wrong = allIds.filter(x => x !== id);
-        shuffle(wrong);
-        const choices = shuffle([id, wrong[0], wrong[1]]);
-        return { id, choices };
-      });
-    }
+function showQuestion() {
+  const q = questions[currentQ];
+  answered = false; revealStep = 0; questionScore = 100;
 
-    function showQuestion() {
-      const q = questions[currentQ];
-      answered = false;
-      secondsElapsed = 0;
-      questionScore = 100;
+  setSpriteForPokemon(q.id);
+  setReveal(0);
 
-      // Set sprite
-      setSpritePosition(q.id);
-      setReveal(0);
+  document.querySelectorAll('.choice').forEach((btn, i) => {
+    const pid = q.choices[i];
+    btn.textContent = POKEMON[pid - 1];
+    btn.setAttribute('data-id', pid);
+    btn.className = 'choice';
+    btn.disabled  = false;
+  });
 
-      // Reset choices
-      const btns = document.querySelectorAll('.choice');
-      btns.forEach((btn, i) => {
-        const pokeId = q.choices[i];
-        btn.textContent = POKEMON[pokeId - 1];
-        btn.setAttribute('data-id', pokeId);
-        btn.className = 'choice';
-        btn.disabled = false;
-      });
+  const mb = document.getElementById('main-btn');
+  mb.textContent = '0/10';
+  mb.disabled    = false;
+  mb.onclick     = onRevealClick;
 
-      // Reset main button
-      const mainBtn = document.getElementById('main-btn');
-      mainBtn.textContent = '0/10';
-      mainBtn.disabled = true;
-      mainBtn.onclick = null;
+  document.getElementById('score-text').textContent = 'Score: 100p';
+}
 
-      document.getElementById('score-text').textContent = 'Score: 100p';
+function onRevealClick() {
+  if (answered) return;
+  revealStep++;
+  questionScore = Math.max(0, 100 - revealStep * PTS_PER_REVEAL);
+  setReveal(revealStep / MAX_REVEALS);
 
-      // Start timer
-      clearInterval(timerInterval);
-      timerInterval = setInterval(tick, 1000);
-    }
+  const mb = document.getElementById('main-btn');
+  if (revealStep >= MAX_REVEALS) {
+    mb.textContent = '10/10';
+    mb.disabled    = true;
+    revealResult(null);
+  } else {
+    mb.textContent = revealStep + '/10';
+  }
+  document.getElementById('score-text').textContent = 'Score: ' + questionScore + 'p';
+}
 
-    function tick() {
-      if (answered) return;
-      secondsElapsed++;
-      questionScore = Math.max(0, 100 - secondsElapsed * 10);
+document.querySelectorAll('.choice').forEach(btn => {
+  btn.addEventListener('click', function () {
+    if (answered) return;
+    answered = true;
+    revealResult(parseInt(this.getAttribute('data-id')));
+  });
+});
 
-      setReveal(secondsElapsed / TIME_LIMIT);
-      document.getElementById('main-btn').textContent = secondsElapsed + '/10';
-      document.getElementById('score-text').textContent = 'Score: ' + questionScore + 'p';
+function revealResult(chosenId) {
+  answered = true;
+  const correctId  = questions[currentQ].id;
+  const earned     = chosenId === correctId ? questionScore : 0;
+  totalScore      += earned;
 
-      if (secondsElapsed >= TIME_LIMIT) {
-        clearInterval(timerInterval);
-        revealResult(null); // time ran out, no choice selected
-      }
-    }
+  setReveal(1);
+  document.getElementById('score-text').textContent = 'Score: ' + earned + 'p';
 
-    function setSpritePosition(pokemonId) {
-      const col = (pokemonId - 1) % SHEET_COLS;
-      const row = Math.floor((pokemonId - 1) / SHEET_COLS);
-      const bgX = -(col * displayW);
-      const bgY = -(row * displayH);
-      const el = document.getElementById('sprite-display');
-      el.style.backgroundPosition = bgX + 'px ' + bgY + 'px';
-    }
+  document.querySelectorAll('.choice').forEach(btn => {
+    const bid = parseInt(btn.getAttribute('data-id'));
+    btn.disabled = true;
+    if (bid === correctId)                  btn.classList.add('correct');
+    else if (chosenId && bid === chosenId)  btn.classList.add('wrong');
+    else                                    btn.classList.add('dim');
+  });
 
-    function setReveal(ratio) {
-      // ratio: 0 = hidden, 1 = fully revealed
-      const el = document.getElementById('sprite-display');
-      if (ratio >= 1) {
-        el.style.clipPath = 'none';
-      } else {
-        // Reveal from center outward
-        const clampedRatio = Math.max(0.05, ratio); // always show a tiny sliver
-        const clipPct = ((1 - clampedRatio) / 2 * 100).toFixed(2);
-        el.style.clipPath = `inset(0 ${clipPct}% 0 ${clipPct}%)`;
-      }
-    }
+  const mb = document.getElementById('main-btn');
+  mb.textContent = 'NEXT';
+  mb.disabled    = false;
+  mb.onclick     = nextQuestion;
+}
 
-    // Attach click handlers to choice buttons
-    document.querySelectorAll('.choice').forEach(btn => {
-      btn.addEventListener('click', function () {
-        if (answered) return;
-        answered = true;
-        clearInterval(timerInterval);
-        const chosenId = parseInt(this.getAttribute('data-id'));
-        revealResult(chosenId);
-      });
-    });
+function nextQuestion() {
+  currentQ++;
+  if (currentQ >= questions.length) showEndScreen();
+  else showQuestion();
+}
 
-    function revealResult(chosenId) {
-      answered = true;
-      const q = questions[currentQ];
-      const correctId = q.id;
-      const isCorrect = chosenId === correctId;
-      const earned = isCorrect ? questionScore : 0;
-      totalScore += earned;
+function showEndScreen() {
+  const max = QUESTIONS_N * 100;
+  const pct = Math.round(totalScore / max * 100);
+  document.getElementById('game').innerHTML = `
+    <div id="end-screen">
+      <h2>Who's that<br>pokemon?</h2>
+      <p class="pts">${totalScore}p</p>
+      <p class="sub">out of ${max}p &mdash; ${pct}%</p>
+      <button id="main-btn" onclick="location.reload()">Play Again</button>
+    </div>`;
+}
 
-      // Fully reveal sprite
-      setReveal(1);
+function shuffle(a) {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
 
-      // Update score text to show what was earned this round
-      document.getElementById('score-text').textContent = 'Score: ' + earned + 'p';
-
-      // Update choice button states
-      document.querySelectorAll('.choice').forEach(btn => {
-        const btnId = parseInt(btn.getAttribute('data-id'));
-        btn.disabled = true;
-        if (btnId === correctId) {
-          btn.classList.add('correct');
-        } else if (chosenId !== null && btnId === chosenId) {
-          btn.classList.add('wrong');
-        } else {
-          btn.classList.add('dim');
-        }
-      });
-
-      // Switch main button to NEXT
-      const mainBtn = document.getElementById('main-btn');
-      mainBtn.textContent = 'NEXT';
-      mainBtn.disabled = false;
-      mainBtn.onclick = nextQuestion;
-    }
-
-    function nextQuestion() {
-      currentQ++;
-      if (currentQ >= questions.length) {
-        showEndScreen();
-      } else {
-        showQuestion();
-      }
-    }
-
-    function showEndScreen() {
-      const maxScore = QUESTIONS_PER_GAME * 100;
-      const pct = Math.round((totalScore / maxScore) * 100);
-
-      document.getElementById('game').innerHTML = `
-        <div id="end-screen">
-          <h2>Who's that<br>pokemon?</h2>
-          <p class="total-score">${totalScore}p</p>
-          <p class="sub-score">out of ${maxScore}p &mdash; ${pct}%</p>
-          <button id="main-btn" onclick="location.reload()">Play Again</button>
-        </div>
-      `;
-    }
-
-    // ----- Utilities -----
-
-    function shuffle(arr) {
-      for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-      return arr;
-    }
-  </script>
+// Start once page loads
+window.addEventListener('load', startGame);
+</script>
 </body>
 </html>
