@@ -54,6 +54,7 @@
       image-rendering: pixelated;
       image-rendering: crisp-edges;
       display: block;
+      filter: grayscale(1);
     }
 
     #main-btn {
@@ -201,6 +202,7 @@ function setReveal(ratio) {
   const el = document.getElementById('sprite-display');
   if (ratio >= 1) {
     el.style.clipPath = 'none';
+    el.style.filter = 'grayscale(0)';
   } else {
     const effective = Math.max(0.04, ratio);
     const clip = ((1 - effective) / 2 * 100).toFixed(1);
@@ -239,6 +241,7 @@ function showQuestion() {
   answered = false; revealStep = 0; questionScore = 100;
 
   setSpriteForPokemon(q.id);
+  document.getElementById('sprite-display').style.filter = 'grayscale(1)';
   setReveal(0);
 
   document.querySelectorAll('.choice').forEach((btn, i) => {
