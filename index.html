@@ -30,18 +30,12 @@
       padding: 24px;
     }
 
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6,
-    p,
-    strong {
+    h1, h2, h3, h4, h5, h6, p, strong {
       font-weight: normal;
     }
 
-    #game {
+    /* ── Generation selection screen ──────────────────────────────────────────── */
+    #gen-screen {
       width: 474px;
       display: flex;
       flex-direction: column;
@@ -49,11 +43,90 @@
       gap: 24px;
     }
 
+    #gen-screen h1 {
+      font-size: 24px;
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    #gen-screen p {
+      font-size: 14px;
+      opacity: 0.7;
+    }
+
+    #gen-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      width: 100%;
+    }
+
+    .gen-btn {
+      border: 1px solid #fff;
+      background: transparent;
+      color: #fff;
+      font-family: 'Tamago', monospace;
+      font-size: 13px;
+      padding: 12px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: center;
+      line-height: 1.4;
+      transition: background 0.1s;
+    }
+
+    .gen-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .gen-btn.all {
+      grid-column: 1 / -1;
+      font-size: 16px;
+      padding: 14px;
+      border-color: #fff;
+    }
+
+    .gen-btn .gen-label {
+      display: block;
+      font-size: 10px;
+      opacity: 0.6;
+      margin-top: 2px;
+    }
+
+    /* ── Loading screen ───────────────────────────────────────────────────────── */
+    #loading-screen {
+      display: none;
+      text-align: center;
+      font-size: 18px;
+      line-height: 2;
+    }
+
+    #loading-screen p {
+      opacity: 0.7;
+      font-size: 13px;
+    }
+
+    /* ── Game screen ──────────────────────────────────────────────────────────── */
+    #game {
+      width: 474px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      display: none;
+    }
+
     #title {
       font-size: 24px;
       text-align: center;
       line-height: 1.6;
       width: 100%;
+    }
+
+    #round-counter {
+      font-size: 13px;
+      opacity: 0.6;
+      text-align: center;
     }
 
     #sprite-container {
@@ -145,6 +218,7 @@
       width: 100%;
     }
 
+    /* ── End screen ───────────────────────────────────────────────────────────── */
     #end-screen {
       text-align: center;
       display: flex;
@@ -175,7 +249,34 @@
 </head>
 
 <body>
+
+  <!-- Generation selection screen -->
+  <div id="gen-screen">
+    <h1>Who's that<br>pokemon?</h1>
+    <p>Choose a generation</p>
+    <div id="gen-grid">
+      <button class="gen-btn" data-gen="1">Gen I<span class="gen-label">Kanto</span></button>
+      <button class="gen-btn" data-gen="2">Gen II<span class="gen-label">Johto</span></button>
+      <button class="gen-btn" data-gen="3">Gen III<span class="gen-label">Hoenn</span></button>
+      <button class="gen-btn" data-gen="4">Gen IV<span class="gen-label">Sinnoh</span></button>
+      <button class="gen-btn" data-gen="5">Gen V<span class="gen-label">Unova</span></button>
+      <button class="gen-btn" data-gen="6">Gen VI<span class="gen-label">Kalos</span></button>
+      <button class="gen-btn" data-gen="7">Gen VII<span class="gen-label">Alola</span></button>
+      <button class="gen-btn" data-gen="8">Gen VIII<span class="gen-label">Galar</span></button>
+      <button class="gen-btn" data-gen="9">Gen IX<span class="gen-label">Paldea</span></button>
+      <button class="gen-btn all" data-gen="all">All generations</button>
+    </div>
+  </div>
+
+  <!-- Loading screen -->
+  <div id="loading-screen">
+    <div>Loading...</div>
+    <p>Fetching Pokemon data</p>
+  </div>
+
+  <!-- Game screen -->
   <div id="game">
+    <div id="round-counter">Round 1 / 10</div>
     <h1 id="title">Who's that pokemon?</h1>
     <div id="sprite-container">
       <img id="sprite-display" src="" alt="">
@@ -186,76 +287,103 @@
       <button class="choice" data-id="0">-</button>
       <button class="choice" data-id="0">-</button>
     </div>
-    <p id="score-text">Score: 100p</p>
+    <p id="score-text">Score: 0p</p>
   </div>
 
   <script>
-    // Sprite URL por ID de Pokedex — garantiza que el sprite mostrado
-    // siempre corresponde exactamente al pokemon de la pregunta.
+    // ── Special name mappings ──────────────────────────────────────────────────
+    const SPECIAL_NAMES = {
+      'nidoran-f': 'Nidoran\u2640', 'nidoran-m': 'Nidoran\u2642',
+      'mr-mime': 'Mr. Mime', 'mr-rime': 'Mr. Rime',
+      'mime-jr': 'Mime Jr.', 'farfetchd': "Farfetch'd",
+      'sirfetchd': "Sirfetch'd", 'flabebe': 'Flab\u00e9b\u00e9',
+      'type-null': 'Type: Null', 'porygon-z': 'Porygon-Z',
+      'ho-oh': 'Ho-Oh', 'jangmo-o': 'Jangmo-o',
+      'hakamo-o': 'Hakamo-o', 'kommo-o': 'Kommo-o',
+      'tapu-koko': 'Tapu Koko', 'tapu-lele': 'Tapu Lele',
+      'tapu-bulu': 'Tapu Bulu', 'tapu-fini': 'Tapu Fini',
+      'chi-yu': 'Chi-Yu', 'chien-pao': 'Chien-Pao',
+      'ting-lu': 'Ting-Lu', 'wo-chien': 'Wo-Chien',
+      'great-tusk': 'Great Tusk', 'scream-tail': 'Scream Tail',
+      'brute-bonnet': 'Brute Bonnet', 'flutter-mane': 'Flutter Mane',
+      'slither-wing': 'Slither Wing', 'sandy-shocks': 'Sandy Shocks',
+      'iron-treads': 'Iron Treads', 'iron-bundle': 'Iron Bundle',
+      'iron-hands': 'Iron Hands', 'iron-jugulis': 'Iron Jugulis',
+      'iron-moth': 'Iron Moth', 'iron-thorns': 'Iron Thorns',
+      'roaring-moon': 'Roaring Moon', 'iron-valiant': 'Iron Valiant',
+      'walking-wake': 'Walking Wake', 'iron-leaves': 'Iron Leaves',
+      'gouging-fire': 'Gouging Fire', 'raging-bolt': 'Raging Bolt',
+      'iron-boulder': 'Iron Boulder', 'iron-crown': 'Iron Crown',
+    };
+
+    function formatName(apiName) {
+      if (SPECIAL_NAMES[apiName]) return SPECIAL_NAMES[apiName];
+      return apiName.split('-')
+        .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(' ');
+    }
+
     function spriteUrl(id) {
       return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
     }
 
-    // ── Pokemon names ─────────────────────────────────────────────────────────────
-    const POKEMON = [
-      'Bulbasaur', 'Ivysaur', 'Venusaur', 'Charmander', 'Charmeleon', 'Charizard',
-      'Squirtle', 'Wartortle', 'Blastoise', 'Caterpie', 'Metapod', 'Butterfree',
-      'Weedle', 'Kakuna', 'Beedrill', 'Pidgey', 'Pidgeotto', 'Pidgeot',
-      'Rattata', 'Raticate', 'Spearow', 'Fearow', 'Ekans', 'Arbok',
-      'Pikachu', 'Raichu', 'Sandshrew', 'Sandslash', 'Nidoran F', 'Nidorina',
-      'Nidoqueen', 'Nidoran M', 'Nidorino', 'Nidoking', 'Clefairy', 'Clefable',
-      'Vulpix', 'Ninetales', 'Jigglypuff', 'Wigglytuff', 'Zubat', 'Golbat',
-      'Oddish', 'Gloom', 'Vileplume', 'Paras', 'Parasect', 'Venonat',
-      'Venomoth', 'Diglett', 'Dugtrio', 'Meowth', 'Persian', 'Psyduck',
-      'Golduck', 'Mankey', 'Primeape', 'Growlithe', 'Arcanine', 'Poliwag',
-      'Poliwhirl', 'Poliwrath', 'Abra', 'Kadabra', 'Alakazam', 'Machop',
-      'Machoke', 'Machamp', 'Bellsprout', 'Weepinbell', 'Victreebel', 'Tentacool',
-      'Tentacruel', 'Geodude', 'Graveler', 'Golem', 'Ponyta', 'Rapidash',
-      'Slowpoke', 'Slowbro', 'Magnemite', 'Magneton', "Farfetch'd", 'Doduo',
-      'Dodrio', 'Seel', 'Dewgong', 'Grimer', 'Muk', 'Shellder',
-      'Cloyster', 'Gastly', 'Haunter', 'Gengar', 'Onix', 'Drowzee',
-      'Hypno', 'Krabby', 'Kingler', 'Voltorb', 'Electrode', 'Exeggcute',
-      'Exeggutor', 'Cubone', 'Marowak', 'Hitmonlee', 'Hitmonchan', 'Lickitung',
-      'Koffing', 'Weezing', 'Rhyhorn', 'Rhydon', 'Chansey', 'Tangela',
-      'Kangaskhan', 'Horsea', 'Seadra', 'Goldeen', 'Seaking', 'Staryu',
-      'Starmie', 'Mr. Mime', 'Scyther', 'Jynx', 'Electabuzz', 'Magmar',
-      'Pinsir', 'Tauros', 'Magikarp', 'Gyarados', 'Lapras', 'Ditto',
-      'Eevee', 'Vaporeon', 'Jolteon', 'Flareon', 'Porygon', 'Omanyte',
-      'Omastar', 'Kabuto', 'Kabutops', 'Aerodactyl', 'Snorlax', 'Articuno',
-      'Zapdos', 'Moltres', 'Dratini', 'Dragonair', 'Dragonite', 'Mewtwo', 'Mew'
-    ];
-
-    // Color groups for chromatic wrong-answer selection
-    // 0=fire/orange  1=water/blue  2=grass/green  3=yellow/electric
-    // 4=pink/normal  5=purple/dark  6=gray/brown
-    const COLOR_GROUP = [
-      2, 2, 2, 0, 0, 0, 1, 1, 1, 2, 2, 4, 6, 3, 3, 6, 6, 6, 5, 6,
-      6, 6, 5, 5, 3, 0, 3, 6, 5, 5, 5, 5, 5, 5, 4, 4, 0, 4, 4, 4,
-      5, 5, 1, 1, 0, 0, 0, 5, 5, 6, 6, 4, 4, 3, 1, 4, 4, 0, 0, 1,
-      1, 1, 3, 3, 3, 6, 6, 6, 2, 2, 2, 1, 1, 6, 6, 6, 0, 4, 4, 4,
-      6, 6, 6, 6, 6, 4, 4, 5, 5, 5, 6, 5, 5, 5, 6, 6, 3, 0, 0, 0,
-      0, 4, 2, 6, 6, 6, 6, 4, 5, 5, 6, 6, 4, 2, 6, 1, 1, 0, 0, 6,
-      5, 4, 2, 5, 3, 0, 6, 6, 0, 1, 1, 5, 6, 1, 3, 0, 4, 1, 1, 6,
-      6, 6, 1, 1, 3, 0, 1, 1, 0, 5, 4
-    ];
-
-    // ── Config ────────────────────────────────────────────────────────────────────
+    // ── Config ────────────────────────────────────────────────────────────────
     const QUESTIONS_N = 10;
     const MAX_REVEALS = 10;
-    const PTS_PER_REVEAL = 20;   // -20p per hint click
-    const PTS_CORRECT_BONUS = 20; // +20p bonus for answering correctly
+    const PTS_PER_REVEAL = 20;
+    const PTS_CORRECT_BONUS = 20;
 
-    // ── Game state ────────────────────────────────────────────────────────────────
+    // ── Game state ────────────────────────────────────────────────────────────
+    let pokemonPool = []; // [{id, name}]
     let questions = [], currentQ = 0, totalScore = 0;
     let revealStep = 0, questionScore = 100, answered = false;
 
-    // ── Sprite helpers ────────────────────────────────────────────────────────────
+    // ── Screen management ─────────────────────────────────────────────────────
+    function showScreen(id) {
+      ['gen-screen', 'loading-screen', 'game'].forEach(s => {
+        document.getElementById(s).style.display = s === id ? (s === 'game' ? 'flex' : 'block') : 'none';
+      });
+    }
+
+    // ── PokéAPI fetching ──────────────────────────────────────────────────────
+    async function fetchPokemonForGen(genId) {
+      if (genId === 'all') {
+        const res = await fetch('https://pokeapi.co/api/v2/pokemon?limit=1025&offset=0');
+        const data = await res.json();
+        return data.results.map((p, i) => ({ id: i + 1, name: formatName(p.name) }));
+      } else {
+        const res = await fetch(`https://pokeapi.co/api/v2/generation/${genId}`);
+        const data = await res.json();
+        return data.pokemon_species
+          .map(s => ({
+            id: parseInt(s.url.split('/').filter(Boolean).pop()),
+            name: formatName(s.name)
+          }))
+          .sort((a, b) => a.id - b.id);
+      }
+    }
+
+    // ── Generation selection ──────────────────────────────────────────────────
+    document.querySelectorAll('.gen-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const genId = btn.getAttribute('data-gen');
+        showScreen('loading-screen');
+        try {
+          pokemonPool = await fetchPokemonForGen(genId === 'all' ? 'all' : parseInt(genId));
+          startGame();
+        } catch (e) {
+          showScreen('gen-screen');
+          alert('Failed to load Pokemon data. Check your connection and try again.');
+        }
+      });
+    });
+
+    // ── Sprite helpers ────────────────────────────────────────────────────────
     function setSpriteForPokemon(id) {
       const el = document.getElementById('sprite-display');
       el.src = spriteUrl(id);
     }
 
-    // ratio 0 = hidden (thin sliver), 1 = fully revealed
     function setReveal(ratio) {
       const el = document.getElementById('sprite-display');
       if (ratio >= 1) {
@@ -268,44 +396,46 @@
       }
     }
 
-    // ── Game logic ────────────────────────────────────────────────────────────────
+    // ── Game logic ────────────────────────────────────────────────────────────
     function startGame() {
       questions = generateQuestions(QUESTIONS_N);
       currentQ = 0;
       totalScore = 0;
+      showScreen('game');
       showQuestion();
     }
 
     function generateQuestions(n) {
-      const ids = Array.from({ length: POKEMON.length }, (_, i) => i + 1);
-      shuffle(ids);
-      return ids.slice(0, n).map(id => ({ id, choices: pickChoices(id) }));
+      const pool = [...pokemonPool];
+      shuffle(pool);
+      return pool.slice(0, n).map(p => ({ id: p.id, name: p.name, choices: pickChoices(p) }));
     }
 
-    function pickChoices(correctId) {
-      const g = COLOR_GROUP[correctId - 1];
-      const same = [], other = [];
-      for (let i = 1; i <= POKEMON.length; i++) {
-        if (i === correctId) continue;
-        (COLOR_GROUP[i - 1] === g ? same : other).push(i);
-      }
-      shuffle(same); shuffle(other);
-      const pool = same.length >= 2 ? same : [...same, ...other];
-      return shuffle([correctId, pool[0], pool[1]]);
+    function pickChoices(correct) {
+      const others = pokemonPool.filter(p => p.id !== correct.id);
+      shuffle(others);
+      return shuffle([correct, others[0], others[1]]);
+    }
+
+    function updateRoundCounter() {
+      const remaining = questions.length - currentQ;
+      document.getElementById('round-counter').textContent =
+        `Round ${currentQ + 1} / ${questions.length} — ${remaining - 1 === 0 ? 'last one!' : (remaining - 1) + ' left after this'}`;
     }
 
     function showQuestion() {
       const q = questions[currentQ];
       answered = false; revealStep = 0; questionScore = 100;
 
+      updateRoundCounter();
       setSpriteForPokemon(q.id);
       document.getElementById('sprite-display').style.filter = 'grayscale(1)';
       setReveal(0);
 
       document.querySelectorAll('.choice').forEach((btn, i) => {
-        const pid = q.choices[i];
-        btn.textContent = POKEMON[pid - 1];
-        btn.setAttribute('data-id', pid);
+        const p = q.choices[i];
+        btn.textContent = p.name;
+        btn.setAttribute('data-id', p.id);
         btn.className = 'choice';
         btn.disabled = false;
       });
@@ -332,7 +462,8 @@
       } else {
         mb.textContent = revealStep + '/10';
       }
-      document.getElementById('score-text').textContent = 'Score: ' + totalScore + 'p  (+' + questionScore + 'p available)';
+      document.getElementById('score-text').textContent =
+        'Score: ' + totalScore + 'p  (+' + questionScore + 'p available)';
     }
 
     document.querySelectorAll('.choice').forEach(btn => {
@@ -345,8 +476,8 @@
 
     function revealResult(chosenId) {
       answered = true;
-      const correctId = questions[currentQ].id;
-      const isCorrect = chosenId === correctId;
+      const q = questions[currentQ];
+      const isCorrect = chosenId === q.id;
       const earned = isCorrect ? questionScore + PTS_CORRECT_BONUS : 0;
       totalScore += earned;
 
@@ -356,7 +487,7 @@
       document.querySelectorAll('.choice').forEach(btn => {
         const bid = parseInt(btn.getAttribute('data-id'));
         btn.disabled = true;
-        if (bid === correctId) btn.classList.add('correct');
+        if (bid === q.id) btn.classList.add('correct');
         else if (chosenId && bid === chosenId) btn.classList.add('wrong');
         else btn.classList.add('dim');
       });
@@ -374,15 +505,15 @@
     }
 
     function showEndScreen() {
-      const max = QUESTIONS_N * (100 + PTS_CORRECT_BONUS); // 1200p max
+      const max = QUESTIONS_N * (100 + PTS_CORRECT_BONUS);
       const pct = Math.round(totalScore / max * 100);
       document.getElementById('game').innerHTML = `
-    <div id="end-screen">
-      <h2>Who's that<br>pokemon?</h2>
-      <p class="pts">${totalScore}p</p>
-      <p class="sub">out of ${max}p &mdash; ${pct}%</p>
-      <button id="main-btn" onclick="location.reload()">Play Again</button>
-    </div>`;
+        <div id="end-screen">
+          <h2>Who's that<br>pokemon?</h2>
+          <p class="pts">${totalScore}p</p>
+          <p class="sub">out of ${max}p &mdash; ${pct}%</p>
+          <button id="main-btn" onclick="location.reload()">Play Again</button>
+        </div>`;
     }
 
     function shuffle(a) {
@@ -393,8 +524,8 @@
       return a;
     }
 
-    // Start once page loads
-    window.addEventListener('load', startGame);
+    // Start at gen selection
+    showScreen('gen-screen');
   </script>
 </body>
 
