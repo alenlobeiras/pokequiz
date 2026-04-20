@@ -149,21 +149,20 @@
     }
 
     #main-btn {
-      background: #fff;
-      color: #000;
-      width: 100%;
-      padding: 16px;
+      background: transparent;
+      color: #fff;
+      width: auto;
+      padding: 10px 24px;
       border-radius: 8px;
       text-align: center;
-      font-size: 24px;
+      font-size: 1rem;
       font-family: 'Tamago', monospace;
-      border: none;
+      border: 1px solid #fff;
       cursor: pointer;
-      min-height: 60px;
     }
 
     #main-btn:hover:not(:disabled) {
-      background: #ddd;
+      background: rgba(255,255,255,0.1);
     }
 
     #main-btn:disabled {
@@ -180,12 +179,12 @@
 
     .choice {
       flex: 1;
-      border: 1px solid #fff;
-      background: transparent;
-      color: #fff;
+      border: none;
+      background: #fff;
+      color: #000;
       font-family: 'Tamago', monospace;
-      font-size: 16px;
-      padding: 4px 6px;
+      font-size: 20px;
+      padding: 10px 6px;
       border-radius: 4px;
       cursor: pointer;
       min-height: 35px;
@@ -193,7 +192,7 @@
     }
 
     .choice:hover:not(:disabled) {
-      background: rgba(255, 255, 255, 0.1);
+      background: #ddd;
     }
 
     .choice:disabled {
@@ -201,13 +200,13 @@
     }
 
     .choice.correct {
-      border: 2px solid #15d000 !important;
-      color: #15d000 !important;
+      background: #15d000 !important;
+      color: #fff !important;
     }
 
     .choice.wrong {
-      border: 2px solid #ff3333 !important;
-      color: #ff3333 !important;
+      background: #ff3333 !important;
+      color: #fff !important;
     }
 
     .choice.dim {
