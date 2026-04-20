@@ -383,8 +383,16 @@
     });
 
     // ── Sprite helpers ────────────────────────────────────────────────────────
+    let spriteFraction = 1;
+
     function setSpriteForPokemon(id) {
       const el = document.getElementById('sprite-display');
+      spriteFraction = 1;
+      el.onload = () => {
+        const scale = Math.min(300 / el.naturalWidth, 300 / el.naturalHeight);
+        spriteFraction = (el.naturalWidth * scale) / 300;
+        setReveal(0);
+      };
       el.src = spriteUrl(id);
     }
 
@@ -394,8 +402,8 @@
         el.style.clipPath = 'none';
         el.style.filter = 'grayscale(0)';
       } else {
-        const effective = Math.max(0.04, ratio);
-        const clip = ((1 - effective) / 2 * 100).toFixed(1);
+        const effective = ratio === 0 ? 0.04 / spriteFraction : ratio;
+        const clip = ((1 - spriteFraction * effective) / 2 * 100).toFixed(1);
         el.style.clipPath = `inset(0 ${clip}% 0 ${clip}%)`;
       }
     }
@@ -434,7 +442,6 @@
       updateRoundCounter();
       setSpriteForPokemon(q.id);
       document.getElementById('sprite-display').style.filter = 'grayscale(1)';
-      setReveal(0);
 
       document.querySelectorAll('.choice').forEach((btn, i) => {
         const p = q.choices[i];
