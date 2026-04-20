@@ -336,13 +336,13 @@
     // ── Config ────────────────────────────────────────────────────────────────
     const QUESTIONS_N = 10;
     const MAX_REVEALS = 10;
-    const PTS_PER_REVEAL = 20;
-    const PTS_CORRECT_BONUS = 20;
+    const PTS_CORRECT = 100;
+    const PTS_WRONG = -20;
 
     // ── Game state ────────────────────────────────────────────────────────────
     let pokemonPool = []; // [{id, name}]
     let questions = [], currentQ = 0, totalScore = 0;
-    let revealStep = 0, questionScore = 100, answered = false;
+    let revealStep = 0, answered = false;
 
     // ── Screen management ─────────────────────────────────────────────────────
     function showScreen(id) {
@@ -459,7 +459,7 @@
 
     function showQuestion() {
       const q = questions[currentQ];
-      answered = false; revealStep = 0; questionScore = 100;
+      answered = false; revealStep = 0;
 
       updateRoundCounter();
       setSpriteForPokemon(q.id);
@@ -479,13 +479,12 @@
       mb.disabled = false;
       mb.onclick = onRevealClick;
 
-      document.getElementById('score-text').textContent = 'Score: ' + totalScore + 'p';
+      document.getElementById('score-text').textContent = 'Score: ' + totalScore + 'p  •  +100p if correct';
     }
 
     function onRevealClick() {
       if (answered) return;
       revealStep++;
-      questionScore = Math.max(0, 100 - revealStep * PTS_PER_REVEAL);
       setReveal(revealStep / MAX_REVEALS);
 
       const mb = document.getElementById('main-btn');
@@ -496,8 +495,6 @@
       } else {
         mb.textContent = 'Hints: ' + revealStep + '/10';
       }
-      document.getElementById('score-text').textContent =
-        'Score: ' + totalScore + 'p  •  +' + questionScore + 'p if correct';
     }
 
     document.querySelectorAll('.choice').forEach(btn => {
@@ -512,7 +509,7 @@
       answered = true;
       const q = questions[currentQ];
       const isCorrect = chosenId === q.id;
-      const earned = isCorrect ? questionScore + PTS_CORRECT_BONUS : 0;
+      const earned = isCorrect ? PTS_CORRECT : PTS_WRONG;
       totalScore += earned;
 
       setReveal(1);
@@ -539,7 +536,7 @@
     }
 
     function showEndScreen() {
-      const max = QUESTIONS_N * (100 + PTS_CORRECT_BONUS);
+      const max = QUESTIONS_N * PTS_CORRECT;
       const pct = Math.round(totalScore / max * 100);
       document.getElementById('game').innerHTML = `
         <div id="end-screen">
