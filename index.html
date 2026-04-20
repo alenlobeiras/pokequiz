@@ -281,7 +281,7 @@
     <div id="sprite-container">
       <img id="sprite-display" src="" alt="">
     </div>
-    <button id="main-btn" disabled>0/10</button>
+    <button id="main-btn" disabled>Pistas: 0/10</button>
     <div id="choices">
       <button class="choice" data-id="0">-</button>
       <button class="choice" data-id="0">-</button>
@@ -441,7 +441,7 @@
       });
 
       const mb = document.getElementById('main-btn');
-      mb.textContent = '0/10';
+      mb.textContent = 'Pistas: 0/10';
       mb.disabled = false;
       mb.onclick = onRevealClick;
 
@@ -456,11 +456,11 @@
 
       const mb = document.getElementById('main-btn');
       if (revealStep >= MAX_REVEALS) {
-        mb.textContent = '10/10';
+        mb.textContent = 'Pistas: 10/10';
         mb.disabled = true;
         revealResult(null);
       } else {
-        mb.textContent = revealStep + '/10';
+        mb.textContent = 'Pistas: ' + revealStep + '/10';
       }
       document.getElementById('score-text').textContent =
         'Score: ' + totalScore + 'p  (+' + questionScore + 'p available)';
