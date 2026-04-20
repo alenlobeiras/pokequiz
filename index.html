@@ -404,24 +404,51 @@
     }
 
     // ── Game logic ────────────────────────────────────────────────────────────
-    function startGame() {
-      questions = generateQuestions(QUESTIONS_N);
+    async function startGame() {
+      const pool = [...pokemonPool];
+      shuffle(pool);
+      const selected = pool.slice(0, QUESTIONS_N);
+
+      const chainCache = {};
+      const evoMap = {};
+
+      await Promise.all(selected.map(async p => {
+        try {
+          const specRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${p.id}`);
+          const spec = await specRes.json();
+          const chainUrl = spec.evolution_chain.url;
+          if (!chainCache[chainUrl]) chainCache[chainUrl] = fetch(chainUrl).then(r => r.json());
+          const chain = await chainCache[chainUrl];
+          const ids = [];
+          (function walk(node) {
+            ids.push(parseInt(node.species.url.split('/').filter(Boolean).pop()));
+            node.evolves_to.forEach(walk);
+          }(chain.chain));
+          evoMap[p.id] = ids.filter(id => id !== p.id && pokemonPool.some(pp => pp.id === id));
+        } catch (_) {
+          evoMap[p.id] = [];
+        }
+      }));
+
+      questions = selected.map(p => ({ id: p.id, name: p.name, choices: pickChoices(p, evoMap[p.id] || []) }));
       currentQ = 0;
       totalScore = 0;
       showScreen('game');
       showQuestion();
     }
 
-    function generateQuestions(n) {
-      const pool = [...pokemonPool];
-      shuffle(pool);
-      return pool.slice(0, n).map(p => ({ id: p.id, name: p.name, choices: pickChoices(p) }));
-    }
-
-    function pickChoices(correct) {
+    function pickChoices(correct, evoRelatives = []) {
       const others = pokemonPool.filter(p => p.id !== correct.id);
       shuffle(others);
-      return shuffle([correct, others[0], others[1]]);
+      let wrong1 = others[0];
+      let wrong2 = others[1];
+      if (evoRelatives.length > 0 && Math.random() < 0.4) {
+        const relative = pokemonPool.find(p => evoRelatives.includes(p.id));
+        if (relative) {
+          if (Math.random() < 0.5) wrong1 = relative; else wrong2 = relative;
+        }
+      }
+      return shuffle([correct, wrong1, wrong2]);
     }
 
     function updateRoundCounter() {
