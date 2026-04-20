@@ -280,7 +280,7 @@
       <span style="display: block; background: #fff; padding: .5rem; width: fit-content; height: fit-content; border-radius: 24px; line-height: 19px; color: #000; font-size: 1.5rem;">←</span>
       <span>Volver a inicio</span>
     </div>
-    <div id="round-counter">Round 1 / 10</div>
+    <div id="round-counter">Ronda 1 de 10</div>
     <h1 id="title">Who's that pokemon?</h1>
     <div id="sprite-container">
       <img id="sprite-display" src="" alt="">
@@ -424,7 +424,7 @@
     function updateRoundCounter() {
       const remaining = questions.length - currentQ;
       document.getElementById('round-counter').textContent =
-        `Round ${currentQ + 1} / ${questions.length} — ${remaining - 1 === 0 ? 'last one!' : (remaining - 1) + ' left after this'}`;
+        `Ronda ${currentQ + 1} de ${questions.length}`;
     }
 
     function showQuestion() {
