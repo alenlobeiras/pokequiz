@@ -280,12 +280,12 @@
       <span style="display: block; background: #fff; padding: .5rem; width: fit-content; height: fit-content; border-radius: 24px; line-height: 19px; color: #000; font-size: 1.5rem;">←</span>
       <span>Volver a inicio</span>
     </div>
-    <div id="round-counter">Ronda 1 de 10</div>
+    <div id="round-counter">Round 1 of 10</div>
     <h1 id="title">Who's that pokemon?</h1>
     <div id="sprite-container">
       <img id="sprite-display" src="" alt="">
     </div>
-    <button id="main-btn" disabled>Pistas: 0/10</button>
+    <button id="main-btn" disabled>Hints: 0/10</button>
     <div id="choices">
       <button class="choice" data-id="0">-</button>
       <button class="choice" data-id="0">-</button>
@@ -424,7 +424,7 @@
     function updateRoundCounter() {
       const remaining = questions.length - currentQ;
       document.getElementById('round-counter').textContent =
-        `Ronda ${currentQ + 1} de ${questions.length}`;
+        `Round ${currentQ + 1} of ${questions.length}`;
     }
 
     function showQuestion() {
@@ -445,7 +445,7 @@
       });
 
       const mb = document.getElementById('main-btn');
-      mb.textContent = 'Pistas: 0/10';
+      mb.textContent = 'Hints: 0/10';
       mb.disabled = false;
       mb.onclick = onRevealClick;
 
@@ -460,11 +460,11 @@
 
       const mb = document.getElementById('main-btn');
       if (revealStep >= MAX_REVEALS) {
-        mb.textContent = 'Pistas: 10/10';
+        mb.textContent = 'Hints: 10/10';
         mb.disabled = true;
         revealResult(null);
       } else {
-        mb.textContent = 'Pistas: ' + revealStep + '/10';
+        mb.textContent = 'Hints: ' + revealStep + '/10';
       }
       document.getElementById('score-text').textContent =
         'Score: ' + totalScore + 'p  (+' + questionScore + 'p available)';
