@@ -479,7 +479,7 @@
       mb.disabled = false;
       mb.onclick = onRevealClick;
 
-      document.getElementById('score-text').textContent = 'Score: ' + totalScore + 'p  •  +100p if correct';
+      document.getElementById('score-text').textContent = 'Score: ' + totalScore + 'p  •  +' + PTS_CORRECT + 'p if correct';
     }
 
     function onRevealClick() {
@@ -495,6 +495,8 @@
       } else {
         mb.textContent = 'Hints: ' + revealStep + '/10';
       }
+      const available = Math.max(0, PTS_CORRECT - revealStep * 10);
+      document.getElementById('score-text').textContent = 'Score: ' + totalScore + 'p  •  +' + available + 'p if correct';
     }
 
     document.querySelectorAll('.choice').forEach(btn => {
@@ -509,7 +511,7 @@
       answered = true;
       const q = questions[currentQ];
       const isCorrect = chosenId === q.id;
-      const earned = isCorrect ? PTS_CORRECT : PTS_WRONG;
+      const earned = isCorrect ? Math.max(0, PTS_CORRECT - revealStep * 10) : PTS_WRONG;
       totalScore += earned;
 
       setReveal(1);
