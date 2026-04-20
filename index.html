@@ -395,7 +395,7 @@
         el.style.filter = 'grayscale(0)';
       } else {
         const step = Math.round(ratio * MAX_REVEALS); // 0..9
-        const visiblePx = Math.max(1, step);
+        const visiblePx = 10 + step * 5; // 10px initial, +5px per hint
         const clipPx = (150 - visiblePx / 2).toFixed(1);
         el.style.clipPath = `inset(0 ${clipPx}px 0 ${clipPx}px)`;
       }
