@@ -141,11 +141,10 @@
     #sprite-display {
       width: 300px;
       height: 300px;
-      object-fit: contain;
-      image-rendering: pixelated;
-      image-rendering: crisp-edges;
       display: block;
       filter: grayscale(1);
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
     }
 
     #main-btn {
@@ -286,7 +285,7 @@
     <div id="round-counter">Round 1 of 10</div>
     <h1 id="title">Who's that pokemon?</h1>
     <div id="sprite-container">
-      <img id="sprite-display" src="" alt="">
+      <canvas id="sprite-display" width="300" height="300"></canvas>
     </div>
     <button id="main-btn" disabled>Hints: 0/10</button>
     <div id="choices">
@@ -336,7 +335,7 @@
 
     // ── Config ────────────────────────────────────────────────────────────────
     const QUESTIONS_N = 10;
-    const MAX_REVEALS = 10;
+    const MAX_REVEALS = 5;
     const PTS_CORRECT = 100;
     const PTS_WRONG = 0;
 
@@ -386,21 +385,82 @@
     });
 
     // ── Sprite helpers ────────────────────────────────────────────────────────
+    let _spriteImg = null;
+    let _pixelSize = 6;
+    let _pixelAnimFrame = null;
+
+    // Step 5 = max hints state (still pixelated); full reveal only on answer
+    const PIXEL_STEPS = [6, 9, 13, 18, 24, 30];
+    function getPixelSizeForStep(step) {
+      return PIXEL_STEPS[Math.min(step, MAX_REVEALS)];
+    }
+
+    function drawPixelated(canvas, img, pixelSize) {
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (pixelSize >= canvas.width) {
+        ctx.imageSmoothingEnabled = true;
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        return;
+      }
+      const off = document.createElement('canvas');
+      off.width = pixelSize;
+      off.height = pixelSize;
+      const octx = off.getContext('2d');
+      octx.imageSmoothingEnabled = true;
+      octx.drawImage(img, 0, 0, pixelSize, pixelSize);
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(off, 0, 0, pixelSize, pixelSize, 0, 0, canvas.width, canvas.height);
+    }
+
+    function animatePixelTo(canvas, img, targetSize, duration) {
+      if (_pixelAnimFrame) { cancelAnimationFrame(_pixelAnimFrame); _pixelAnimFrame = null; }
+      const startSize = _pixelSize;
+      if (startSize === targetSize) return;
+      const startTime = performance.now();
+      function step(now) {
+        const t = Math.min((now - startTime) / duration, 1);
+        const eased = 1 - Math.pow(1 - t, 3);
+        const size = Math.round(startSize + (targetSize - startSize) * eased);
+        drawPixelated(canvas, img, size);
+        _pixelSize = size;
+        if (t < 1) {
+          _pixelAnimFrame = requestAnimationFrame(step);
+        } else {
+          _pixelSize = targetSize;
+          _pixelAnimFrame = null;
+        }
+      }
+      _pixelAnimFrame = requestAnimationFrame(step);
+    }
+
     function setSpriteForPokemon(id) {
-      const el = document.getElementById('sprite-display');
-      el.src = spriteUrl(id);
+      if (_pixelAnimFrame) { cancelAnimationFrame(_pixelAnimFrame); _pixelAnimFrame = null; }
+      _spriteImg = null;
+      const canvas = document.getElementById('sprite-display');
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        _spriteImg = img;
+        drawPixelated(canvas, img, _pixelSize);
+      };
+      img.src = spriteUrl(id);
     }
 
     function setReveal(ratio) {
-      const el = document.getElementById('sprite-display');
+      const canvas = document.getElementById('sprite-display');
       if (ratio >= 1) {
-        el.style.clipPath = 'none';
-        el.style.filter = 'grayscale(0)';
+        canvas.style.filter = 'grayscale(0)';
+        if (_spriteImg) animatePixelTo(canvas, _spriteImg, 300, 600);
+      } else if (ratio === 0) {
+        _pixelSize = getPixelSizeForStep(0);
+        if (_spriteImg) drawPixelated(canvas, _spriteImg, _pixelSize);
       } else {
-        const step = Math.round(ratio * MAX_REVEALS); // 0..9
-        const visiblePx = 10 + step * 5; // 10px initial, +5px per hint
-        const clipPx = (150 - visiblePx / 2).toFixed(1);
-        el.style.clipPath = `inset(0 ${clipPx}px 0 ${clipPx}px)`;
+        const step = Math.round(ratio * MAX_REVEALS);
+        const targetSize = getPixelSizeForStep(step);
+        if (_spriteImg) animatePixelTo(canvas, _spriteImg, targetSize, 400);
       }
     }
 
@@ -476,7 +536,7 @@
       });
 
       const mb = document.getElementById('main-btn');
-      mb.textContent = 'Hints: 0/10';
+      mb.textContent = 'Hints: 0/5';
       mb.disabled = false;
       mb.onclick = onRevealClick;
 
@@ -486,15 +546,17 @@
     function onRevealClick() {
       if (answered) return;
       revealStep++;
-      setReveal(revealStep / MAX_REVEALS);
+      // Never pass ratio=1 here — full reveal only happens on answer
+      const canvas = document.getElementById('sprite-display');
+      const targetSize = getPixelSizeForStep(revealStep);
+      if (_spriteImg) animatePixelTo(canvas, _spriteImg, targetSize, 400);
 
       const mb = document.getElementById('main-btn');
       if (revealStep >= MAX_REVEALS) {
-        mb.textContent = 'Hints: 10/10';
+        mb.textContent = 'Hints: 5/5';
         mb.disabled = true;
-        revealResult(null);
       } else {
-        mb.textContent = 'Hints: ' + revealStep + '/10';
+        mb.textContent = 'Hints: ' + revealStep + '/5';
       }
       const available = Math.max(0, PTS_CORRECT - revealStep * 10);
       document.getElementById('score-text').textContent = 'Score: ' + totalScore + 'p  •  +' + available + 'p if correct';
@@ -516,6 +578,7 @@
       totalScore += earned;
 
       setReveal(1);
+      new Audio(`https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/${q.id}.ogg`).play().catch(() => {});
       document.getElementById('score-text').textContent = 'Score: ' + totalScore + 'p  (+' + earned + 'p)';
 
       document.querySelectorAll('.choice').forEach(btn => {
