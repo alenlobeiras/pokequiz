@@ -30,7 +30,14 @@
       padding: 24px;
     }
 
-    h1, h2, h3, h4, h5, h6, p, strong {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    p,
+    strong {
       font-weight: normal;
     }
 
@@ -49,9 +56,9 @@
       line-height: 1.6;
     }
 
-    #gen-screen > p {
-      font-size: 14px;
-      opacity: 0.7;
+    #gen-screen>p {
+      font-size: 16px;
+      color: #818181;
     }
 
     #gen-grid {
@@ -66,7 +73,7 @@
       background: transparent;
       color: #fff;
       font-family: 'Tamago', monospace;
-      font-size: 13px;
+      font-size: 16px;
       padding: 12px 8px;
       border-radius: 6px;
       cursor: pointer;
@@ -87,8 +94,8 @@
 
     .gen-btn .gen-label {
       display: block;
-      font-size: 10px;
-      opacity: 0.6;
+      font-size: 13px;
+      color: #818181;
       margin-top: 2px;
     }
 
@@ -109,7 +116,7 @@
 
     #diff-gen-label {
       font-size: 13px;
-      opacity: 0.6;
+      color: #818181;
     }
 
     #diff-grid {
@@ -143,18 +150,14 @@
 
     .diff-btn .diff-name {
       display: block;
-      font-size: 15px;
+      font-size: 16px;
     }
 
     .diff-btn .diff-stats {
       display: block;
-      font-size: 10px;
-      opacity: 0.55;
+      font-size: 13px;
       margin-top: 4px;
-    }
-
-    .diff-btn.selected .diff-stats {
-      opacity: 0.45;
+      color: #818181;
     }
 
     #mode-toggle {
@@ -169,7 +172,7 @@
       background: transparent;
       color: #fff;
       font-family: 'Tamago', monospace;
-      font-size: 14px;
+      font-size: 16px;
       padding: 12px;
       border-radius: 6px;
       cursor: pointer;
@@ -180,13 +183,9 @@
 
     .mode-btn .mode-sub {
       display: block;
-      font-size: 10px;
-      opacity: 0.55;
+      font-size: 13px;
+      color: #818181;
       margin-top: 2px;
-    }
-
-    .mode-btn.selected .mode-sub {
-      opacity: 0.45;
     }
 
     .mode-btn.selected {
@@ -200,7 +199,7 @@
 
     #diff-record {
       font-size: 13px;
-      opacity: 0.6;
+      color: #818181;
       text-align: center;
       min-height: 20px;
     }
@@ -233,12 +232,12 @@
       font-size: 13px;
       border: none;
       cursor: pointer;
-      opacity: 0.5;
       padding: 4px;
+      transition: ease-in-out color 0.15s;
     }
 
     #diff-back:hover {
-      opacity: 1;
+      color: #818181;
     }
 
     /* ── Loading screen ─────────────────────────────────────────────────────── */
@@ -285,12 +284,11 @@
     }
 
     #sprite-container {
-      height: 220px;
+      height: 300px;
       width: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
     }
 
     #sprite-display {
@@ -323,6 +321,30 @@
     #main-btn:disabled {
       cursor: default;
       opacity: 0.5;
+    }
+
+    #action-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    #see-result-link {
+      display: none;
+      color: #fff;
+      font-size: 14px;
+      text-decoration: underline;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-family: 'Tamago', monospace;
+      padding: 4px;
+      transition: opacity 0.2s;
+    }
+
+    #see-result-link:hover {
+      opacity: 0.6;
     }
 
     #choices {
@@ -370,7 +392,7 @@
     }
 
     #score-text {
-      font-size: 14px;
+      font-size: 16px;
       text-align: center;
       width: 100%;
     }
@@ -394,12 +416,12 @@
     }
 
     #end-screen .sub {
-      font-size: 14px;
+      font-size: 16px;
       opacity: 0.7;
     }
 
     #end-screen .new-record {
-      font-size: 14px;
+      font-size: 16px;
       color: #FFD700;
     }
 
@@ -434,37 +456,37 @@
   <div id="difficulty-screen">
     <h1>Who's that pokemon?</h1>
     <p id="diff-gen-label"></p>
+    <div id="mode-toggle">
+      <button class="mode-btn selected" data-mode="classic">
+        10 Rounds
+        <span class="mode-sub">Cumulative score</span>
+      </button>
+      <button class="mode-btn" data-mode="infinite">
+        Infinite
+        <span class="mode-sub">Until you run out of lives</span>
+      </button>
+    </div>
     <div id="diff-grid">
       <button class="diff-btn" data-diff="easy">
-        <span class="diff-name">Fácil</span>
-        <span class="diff-stats">2 opciones · 5 pistas · máx 500p</span>
+        <span class="diff-name">Easy</span>
+        <span class="diff-stats"></span>
       </button>
       <button class="diff-btn selected" data-diff="normal">
         <span class="diff-name">Normal</span>
-        <span class="diff-stats">3 opciones · 5 pistas · máx 1000p</span>
+        <span class="diff-stats"></span>
       </button>
       <button class="diff-btn" data-diff="hard">
-        <span class="diff-name">Difícil</span>
-        <span class="diff-stats">3 opciones · 3 pistas · máx 1500p</span>
+        <span class="diff-name">Hard</span>
+        <span class="diff-stats"></span>
       </button>
       <button class="diff-btn" data-diff="expert">
-        <span class="diff-name">Experto</span>
-        <span class="diff-stats">4 opciones · 1 pista · máx 2000p</span>
+        <span class="diff-name">Expert</span>
+        <span class="diff-stats"></span>
       </button>
     </div>
-    <div id="mode-toggle">
-      <button class="mode-btn selected" data-mode="classic">
-        10 Rondas
-        <span class="mode-sub">Puntuación acumulada</span>
-      </button>
-      <button class="mode-btn" data-mode="infinite">
-        Infinito
-        <span class="mode-sub">Hasta perder todas las vidas</span>
-      </button>
-    </div>
-    <p id="diff-record">Récord: —</p>
-    <button id="play-btn">Jugar</button>
-    <button id="diff-back">← Volver</button>
+    <p id="diff-record">Record: —</p>
+    <button id="play-btn">Play</button>
+    <button id="diff-back">← Back</button>
   </div>
 
   <!-- Loading screen -->
@@ -475,8 +497,10 @@
 
   <!-- Game screen -->
   <div id="game">
-    <div class="back-button" onclick="goHome()" style="position: fixed; left: 1rem; top: 1rem; display: flex; align-items: center; gap: .5rem; cursor: pointer;">
-      <span style="display: block; background: #fff; padding: .5rem; width: fit-content; height: fit-content; border-radius: 24px; line-height: 19px; color: #000; font-size: 1.5rem;">←</span>
+    <div class="back-button" onclick="goHome()"
+      style="position: fixed; left: 1rem; top: 1rem; display: flex; align-items: center; gap: .5rem; cursor: pointer;">
+      <span
+        style="display: block; background: #fff; padding: .5rem; width: fit-content; height: fit-content; border-radius: 24px; line-height: 19px; color: #000; font-size: 1.5rem;">←</span>
       <span>Back to home</span>
     </div>
     <div id="round-counter"></div>
@@ -485,7 +509,10 @@
     <div id="sprite-container">
       <canvas id="sprite-display" width="300" height="300"></canvas>
     </div>
-    <button id="main-btn" disabled>Hints: 0/5</button>
+    <div id="action-group">
+      <button id="main-btn" disabled>Hints: 0/5</button>
+      <button id="see-result-link">See result</button>
+    </div>
     <div id="choices"></div>
     <p id="score-text">Score: 0p</p>
   </div>
@@ -529,10 +556,10 @@
 
     // ── Difficulty config ──────────────────────────────────────────────────────
     const DIFFICULTIES = {
-      easy:   { label: 'Fácil',   choices: 2, maxHints: 5, pts: 50,  hintPenalty: 5,   evoTrap: 'never',  lives: 3 },
-      normal: { label: 'Normal',  choices: 3, maxHints: 5, pts: 100, hintPenalty: 10,  evoTrap: 'maybe',  lives: 2 },
-      hard:   { label: 'Difícil', choices: 3, maxHints: 3, pts: 150, hintPenalty: 30,  evoTrap: 'always', lives: 2 },
-      expert: { label: 'Experto', choices: 4, maxHints: 1, pts: 200, hintPenalty: 100, evoTrap: 'always', lives: 1 },
+      easy: { label: 'Easy', choices: 2, maxHints: 5, pts: 50, hintPenalty: 5, evoTrap: 'never', lives: 3 },
+      normal: { label: 'Normal', choices: 3, maxHints: 5, pts: 100, hintPenalty: 10, evoTrap: 'maybe', lives: 2 },
+      hard: { label: 'Hard', choices: 3, maxHints: 3, pts: 150, hintPenalty: 30, evoTrap: 'always', lives: 2 },
+      expert: { label: 'Expert', choices: 4, maxHints: 1, pts: 200, hintPenalty: 100, evoTrap: 'always', lives: 1 },
     };
 
     const QUESTIONS_N = 10;
@@ -594,16 +621,31 @@
       const rec = getRecord();
       const el = document.getElementById('diff-record');
       if (rec === null) {
-        el.textContent = 'Récord: —';
+        el.textContent = 'Record: —';
         return;
       }
       const diff = DIFFICULTIES[selectedDifficulty];
       if (selectedMode === 'classic') {
         const maxPts = QUESTIONS_N * diff.pts;
-        el.innerHTML = `Récord: <span>${rec}p</span> de ${maxPts}p`;
+        el.innerHTML = `Record: <span>${rec}p</span> of ${maxPts}p`;
       } else {
-        el.innerHTML = `Récord: <span>${rec} aciertos</span>`;
+        el.innerHTML = `Record: <span>${rec} correct</span>`;
       }
+    }
+
+    function updateDifficultyStats() {
+      document.querySelectorAll('.diff-btn').forEach(btn => {
+        const diff = DIFFICULTIES[btn.getAttribute('data-diff')];
+        const statsEl = btn.querySelector('.diff-stats');
+        const hintsLabel = `${diff.maxHints} ${diff.maxHints === 1 ? 'hint' : 'hints'}`;
+        const base = `${diff.choices} choices · ${hintsLabel}`;
+        if (selectedMode === 'classic') {
+          statsEl.textContent = `${base} · max ${QUESTIONS_N * diff.pts}p`;
+        } else {
+          const livesLabel = `${diff.lives} ${diff.lives === 1 ? 'life' : 'lives'}`;
+          statsEl.textContent = `${base} · ${livesLabel}`;
+        }
+      });
     }
 
     // ── PokéAPI fetching ───────────────────────────────────────────────────────
@@ -629,6 +671,7 @@
       btn.addEventListener('click', () => {
         selectedGen = btn.getAttribute('data-gen');
         document.getElementById('diff-gen-label').textContent = GEN_LABELS[selectedGen] || '';
+        updateDifficultyStats();
         updateRecordDisplay();
         showScreen('difficulty-screen');
       });
@@ -649,6 +692,7 @@
         document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('selected'));
         btn.classList.add('selected');
         selectedMode = btn.getAttribute('data-mode');
+        updateDifficultyStats();
         updateRecordDisplay();
       });
     });
@@ -682,6 +726,7 @@
     }
 
     function drawPixelated(canvas, img, pixelSize) {
+      if (!img || !img.naturalWidth || pixelSize < 1) return;
       const ctx = canvas.getContext('2d');
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       if (pixelSize >= canvas.width) {
@@ -699,15 +744,28 @@
       ctx.drawImage(off, 0, 0, pixelSize, pixelSize, 0, 0, canvas.width, canvas.height);
     }
 
+    function drawPlaceholder(canvas) {
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#1a1a1a';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#444';
+      ctx.font = 'bold 160px monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('?', canvas.width / 2, canvas.height / 2);
+    }
+
     function animatePixelTo(canvas, img, targetSize, duration) {
       if (_pixelAnimFrame) { cancelAnimationFrame(_pixelAnimFrame); _pixelAnimFrame = null; }
+      if (!img || !img.naturalWidth) return;
       const startSize = _pixelSize;
       if (startSize === targetSize) return;
       const startTime = performance.now();
       function step(now) {
         const t = Math.min((now - startTime) / duration, 1);
         const eased = 1 - Math.pow(1 - t, 3);
-        const size = Math.round(startSize + (targetSize - startSize) * eased);
+        const size = Math.max(1, Math.round(startSize + (targetSize - startSize) * eased));
         drawPixelated(canvas, img, size);
         _pixelSize = size;
         if (t < 1) {
@@ -728,8 +786,18 @@
       const img = new Image();
       img.crossOrigin = 'anonymous';
       img.onload = () => {
+        if (!img.naturalWidth) { drawPlaceholder(canvas); return; }
         _spriteImg = img;
-        drawPixelated(canvas, img, _pixelSize);
+        if (answered) {
+          canvas.style.filter = 'grayscale(0)';
+          _pixelSize = canvas.width;
+          drawPixelated(canvas, img, canvas.width);
+        } else {
+          drawPixelated(canvas, img, _pixelSize);
+        }
+      };
+      img.onerror = () => {
+        drawPlaceholder(canvas);
       };
       img.src = spriteUrl(id);
     }
@@ -822,7 +890,10 @@
 
     function updateLivesDisplay() {
       const el = document.getElementById('lives-display');
-      el.textContent = selectedMode === 'infinite' ? '♥ '.repeat(lives).trim() : '';
+      if (selectedMode !== 'infinite') { el.textContent = ''; return; }
+      const maxLives = DIFFICULTIES[selectedDifficulty].lives;
+      const lost = Math.max(0, maxLives - lives);
+      el.textContent = '\u2764\uFE0F'.repeat(lives) + '\uD83D\uDC94'.repeat(lost);
     }
 
     function updateRoundCounter() {
@@ -830,7 +901,7 @@
       if (selectedMode === 'classic') {
         el.textContent = `Round ${currentQ + 1} of ${questions.length}`;
       } else {
-        el.textContent = `Aciertos: ${correctCount}`;
+        el.textContent = `Correct: ${correctCount}`;
       }
     }
 
@@ -872,6 +943,8 @@
       mb.disabled = diff.maxHints === 0;
       mb.onclick = onRevealClick;
 
+      document.getElementById('see-result-link').style.display = 'none';
+
       document.getElementById('score-text').textContent =
         `Score: ${totalScore}p  •  +${diff.pts}p if correct`;
     }
@@ -906,7 +979,7 @@
       setReveal(1);
       const cry = new Audio(`https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/${q.id}.ogg`);
       cry.volume = 0.05;
-      cry.play().catch(() => {});
+      cry.play().catch(() => { });
 
       if (selectedMode === 'infinite' && !isCorrect) {
         lives--;
@@ -927,8 +1000,11 @@
       mb.disabled = false;
 
       if (selectedMode === 'infinite' && lives <= 0) {
-        mb.textContent = 'Ver resultado';
-        mb.onclick = showEndScreen;
+        mb.textContent = 'Play again';
+        mb.onclick = playAgainSameSettings;
+        const link = document.getElementById('see-result-link');
+        link.style.display = 'block';
+        link.onclick = showEndScreen;
       } else {
         mb.textContent = 'NEXT';
         mb.onclick = nextQuestion;
@@ -941,6 +1017,16 @@
       else showQuestion();
     }
 
+    async function playAgainSameSettings() {
+      showScreen('loading-screen');
+      try {
+        await startGame();
+      } catch (e) {
+        showScreen('difficulty-screen');
+        alert('Failed to restart. Please try again.');
+      }
+    }
+
     function showEndScreen() {
       const diff = DIFFICULTIES[selectedDifficulty];
       const recordValue = selectedMode === 'classic' ? totalScore : correctCount;
@@ -951,10 +1037,10 @@
         const max = QUESTIONS_N * diff.pts;
         const pct = Math.round(totalScore / max * 100);
         scoreDisplay = `${totalScore}p`;
-        subDisplay = `de ${max}p &mdash; ${pct}%`;
+        subDisplay = `of ${max}p &mdash; ${pct}%`;
       } else {
         scoreDisplay = `${correctCount}`;
-        subDisplay = `aciertos &mdash; ${totalScore}p totales`;
+        subDisplay = `correct &mdash; ${totalScore}p total`;
       }
 
       document.getElementById('game').innerHTML = `
@@ -962,7 +1048,7 @@
           <h2>Who's that<br>pokemon?</h2>
           <p class="pts">${scoreDisplay}</p>
           <p class="sub">${subDisplay}</p>
-          ${isNewRecord ? '<p class="new-record">★ Nuevo récord ★</p>' : ''}
+          ${isNewRecord ? '<p class="new-record">★ New record ★</p>' : ''}
           <button id="main-btn" onclick="location.reload()">Play Again</button>
         </div>`;
     }
