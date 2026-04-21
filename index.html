@@ -34,7 +34,7 @@
       font-weight: normal;
     }
 
-    /* ── Generation selection screen ──────────────────────────────────────────── */
+    /* ── Generation selection screen ────────────────────────────────────────── */
     #gen-screen {
       width: 474px;
       display: flex;
@@ -49,7 +49,7 @@
       line-height: 1.6;
     }
 
-    #gen-screen p {
+    #gen-screen > p {
       font-size: 14px;
       opacity: 0.7;
     }
@@ -83,7 +83,6 @@
       grid-column: 1 / -1;
       font-size: 16px;
       padding: 14px;
-      border-color: #fff;
     }
 
     .gen-btn .gen-label {
@@ -93,7 +92,156 @@
       margin-top: 2px;
     }
 
-    /* ── Loading screen ───────────────────────────────────────────────────────── */
+    /* ── Difficulty screen ──────────────────────────────────────────────────── */
+    #difficulty-screen {
+      width: 474px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    #difficulty-screen h1 {
+      font-size: 24px;
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    #diff-gen-label {
+      font-size: 13px;
+      opacity: 0.6;
+    }
+
+    #diff-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      width: 100%;
+    }
+
+    .diff-btn {
+      border: 1px solid #fff;
+      background: transparent;
+      color: #fff;
+      font-family: 'Tamago', monospace;
+      padding: 14px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: left;
+      line-height: 1.6;
+      transition: background 0.15s, color 0.15s, opacity 0.15s;
+    }
+
+    .diff-btn:hover:not(.selected) {
+      opacity: 0.6;
+    }
+
+    .diff-btn.selected {
+      background: #fff;
+      color: #000;
+    }
+
+    .diff-btn .diff-name {
+      display: block;
+      font-size: 15px;
+    }
+
+    .diff-btn .diff-stats {
+      display: block;
+      font-size: 10px;
+      opacity: 0.55;
+      margin-top: 4px;
+    }
+
+    .diff-btn.selected .diff-stats {
+      opacity: 0.45;
+    }
+
+    #mode-toggle {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .mode-btn {
+      flex: 1;
+      border: 1px solid #fff;
+      background: transparent;
+      color: #fff;
+      font-family: 'Tamago', monospace;
+      font-size: 14px;
+      padding: 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: center;
+      line-height: 1.5;
+      transition: background 0.15s, color 0.15s, opacity 0.15s;
+    }
+
+    .mode-btn .mode-sub {
+      display: block;
+      font-size: 10px;
+      opacity: 0.55;
+      margin-top: 2px;
+    }
+
+    .mode-btn.selected .mode-sub {
+      opacity: 0.45;
+    }
+
+    .mode-btn.selected {
+      background: #fff;
+      color: #000;
+    }
+
+    .mode-btn:hover:not(.selected) {
+      opacity: 0.6;
+    }
+
+    #diff-record {
+      font-size: 13px;
+      opacity: 0.6;
+      text-align: center;
+      min-height: 20px;
+    }
+
+    #diff-record span {
+      opacity: 1;
+      color: #fff;
+    }
+
+    #play-btn {
+      background: #fff;
+      color: #000;
+      font-family: 'Tamago', monospace;
+      font-size: 16px;
+      padding: 14px 48px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    #play-btn:hover {
+      opacity: 0.7;
+    }
+
+    #diff-back {
+      background: transparent;
+      color: #fff;
+      font-family: 'Tamago', monospace;
+      font-size: 13px;
+      border: none;
+      cursor: pointer;
+      opacity: 0.5;
+      padding: 4px;
+    }
+
+    #diff-back:hover {
+      opacity: 1;
+    }
+
+    /* ── Loading screen ─────────────────────────────────────────────────────── */
     #loading-screen {
       display: none;
       text-align: center;
@@ -106,7 +254,7 @@
       font-size: 13px;
     }
 
-    /* ── Game screen ──────────────────────────────────────────────────────────── */
+    /* ── Game screen ────────────────────────────────────────────────────────── */
     #game {
       width: 474px;
       display: flex;
@@ -127,6 +275,13 @@
       font-size: 13px;
       opacity: 0.6;
       text-align: center;
+    }
+
+    #lives-display {
+      font-size: 20px;
+      letter-spacing: 6px;
+      text-align: center;
+      min-height: 28px;
     }
 
     #sprite-container {
@@ -220,7 +375,7 @@
       width: 100%;
     }
 
-    /* ── End screen ───────────────────────────────────────────────────────────── */
+    /* ── End screen ─────────────────────────────────────────────────────────── */
     #end-screen {
       text-align: center;
       display: flex;
@@ -241,6 +396,11 @@
     #end-screen .sub {
       font-size: 14px;
       opacity: 0.7;
+    }
+
+    #end-screen .new-record {
+      font-size: 14px;
+      color: #FFD700;
     }
 
     #end-screen #main-btn {
@@ -270,6 +430,43 @@
     </div>
   </div>
 
+  <!-- Difficulty screen -->
+  <div id="difficulty-screen">
+    <h1>Who's that pokemon?</h1>
+    <p id="diff-gen-label"></p>
+    <div id="diff-grid">
+      <button class="diff-btn" data-diff="easy">
+        <span class="diff-name">Fácil</span>
+        <span class="diff-stats">2 opciones · 5 pistas · máx 500p</span>
+      </button>
+      <button class="diff-btn selected" data-diff="normal">
+        <span class="diff-name">Normal</span>
+        <span class="diff-stats">3 opciones · 5 pistas · máx 1000p</span>
+      </button>
+      <button class="diff-btn" data-diff="hard">
+        <span class="diff-name">Difícil</span>
+        <span class="diff-stats">3 opciones · 3 pistas · máx 1500p</span>
+      </button>
+      <button class="diff-btn" data-diff="expert">
+        <span class="diff-name">Experto</span>
+        <span class="diff-stats">4 opciones · 1 pista · máx 2000p</span>
+      </button>
+    </div>
+    <div id="mode-toggle">
+      <button class="mode-btn selected" data-mode="classic">
+        10 Rondas
+        <span class="mode-sub">Puntuación acumulada</span>
+      </button>
+      <button class="mode-btn" data-mode="infinite">
+        Infinito
+        <span class="mode-sub">Hasta perder todas las vidas</span>
+      </button>
+    </div>
+    <p id="diff-record">Récord: —</p>
+    <button id="play-btn">Jugar</button>
+    <button id="diff-back">← Volver</button>
+  </div>
+
   <!-- Loading screen -->
   <div id="loading-screen">
     <div>Loading...</div>
@@ -278,21 +475,18 @@
 
   <!-- Game screen -->
   <div id="game">
-    <div class="back-button" onclick="location.reload()" style="position: fixed; left: 1rem; top: 1rem; display: flex; align-items: center; gap: .5rem; cursor: pointer;">
+    <div class="back-button" onclick="goHome()" style="position: fixed; left: 1rem; top: 1rem; display: flex; align-items: center; gap: .5rem; cursor: pointer;">
       <span style="display: block; background: #fff; padding: .5rem; width: fit-content; height: fit-content; border-radius: 24px; line-height: 19px; color: #000; font-size: 1.5rem;">←</span>
       <span>Back to home</span>
     </div>
-    <div id="round-counter">Round 1 of 10</div>
+    <div id="round-counter"></div>
+    <div id="lives-display"></div>
     <h1 id="title">Who's that pokemon?</h1>
     <div id="sprite-container">
       <canvas id="sprite-display" width="300" height="300"></canvas>
     </div>
-    <button id="main-btn" disabled>Hints: 0/10</button>
-    <div id="choices">
-      <button class="choice" data-id="0">-</button>
-      <button class="choice" data-id="0">-</button>
-      <button class="choice" data-id="0">-</button>
-    </div>
+    <button id="main-btn" disabled>Hints: 0/5</button>
+    <div id="choices"></div>
     <p id="score-text">Score: 0p</p>
   </div>
 
@@ -333,25 +527,86 @@
       return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
     }
 
-    // ── Config ────────────────────────────────────────────────────────────────
-    const QUESTIONS_N = 10;
-    const MAX_REVEALS = 5;
-    const PTS_CORRECT = 100;
-    const PTS_WRONG = 0;
+    // ── Difficulty config ──────────────────────────────────────────────────────
+    const DIFFICULTIES = {
+      easy:   { label: 'Fácil',   choices: 2, maxHints: 5, pts: 50,  hintPenalty: 5,   evoTrap: 'never',  lives: 3 },
+      normal: { label: 'Normal',  choices: 3, maxHints: 5, pts: 100, hintPenalty: 10,  evoTrap: 'maybe',  lives: 2 },
+      hard:   { label: 'Difícil', choices: 3, maxHints: 3, pts: 150, hintPenalty: 30,  evoTrap: 'always', lives: 2 },
+      expert: { label: 'Experto', choices: 4, maxHints: 1, pts: 200, hintPenalty: 100, evoTrap: 'always', lives: 1 },
+    };
 
-    // ── Game state ────────────────────────────────────────────────────────────
-    let pokemonPool = []; // [{id, name}]
+    const QUESTIONS_N = 10;
+
+    const GEN_LABELS = {
+      '1': 'Gen I – Kanto', '2': 'Gen II – Johto', '3': 'Gen III – Hoenn',
+      '4': 'Gen IV – Sinnoh', '5': 'Gen V – Unova', '6': 'Gen VI – Kalos',
+      '7': 'Gen VII – Alola', '8': 'Gen VIII – Galar', '9': 'Gen IX – Paldea',
+      'all': 'All Generations',
+    };
+
+    // ── App state ──────────────────────────────────────────────────────────────
+    let pokemonPool = [];
+    let pokemonPoolGen = null;
+    let selectedGen = null;
+    let selectedDifficulty = 'normal';
+    let selectedMode = 'classic';
     let questions = [], currentQ = 0, totalScore = 0;
     let revealStep = 0, answered = false;
+    let lives = 0, correctCount = 0;
+    let evoMapCache = {};
 
-    // ── Screen management ─────────────────────────────────────────────────────
+    // ── Screen management ──────────────────────────────────────────────────────
     function showScreen(id) {
-      ['gen-screen', 'loading-screen', 'game'].forEach(s => {
-        document.getElementById(s).style.display = s === id ? (s === 'game' ? 'flex' : 'block') : 'none';
+      ['gen-screen', 'difficulty-screen', 'loading-screen', 'game'].forEach(s => {
+        const el = document.getElementById(s);
+        if (s === id) {
+          el.style.display = (s === 'game' || s === 'difficulty-screen') ? 'flex' : 'block';
+        } else {
+          el.style.display = 'none';
+        }
       });
     }
 
-    // ── PokéAPI fetching ──────────────────────────────────────────────────────
+    function goHome() {
+      showScreen('gen-screen');
+    }
+
+    // ── LocalStorage records ───────────────────────────────────────────────────
+    function getRecordKey() {
+      return `pokequiz_${selectedGen}_${selectedDifficulty}_${selectedMode}`;
+    }
+
+    function getRecord() {
+      const val = localStorage.getItem(getRecordKey());
+      return val !== null ? parseInt(val) : null;
+    }
+
+    function saveRecord(score) {
+      const prev = getRecord();
+      if (prev === null || score > prev) {
+        localStorage.setItem(getRecordKey(), score);
+        return true;
+      }
+      return false;
+    }
+
+    function updateRecordDisplay() {
+      const rec = getRecord();
+      const el = document.getElementById('diff-record');
+      if (rec === null) {
+        el.textContent = 'Récord: —';
+        return;
+      }
+      const diff = DIFFICULTIES[selectedDifficulty];
+      if (selectedMode === 'classic') {
+        const maxPts = QUESTIONS_N * diff.pts;
+        el.innerHTML = `Récord: <span>${rec}p</span> de ${maxPts}p`;
+      } else {
+        el.innerHTML = `Récord: <span>${rec} aciertos</span>`;
+      }
+    }
+
+    // ── PokéAPI fetching ───────────────────────────────────────────────────────
     async function fetchPokemonForGen(genId) {
       if (genId === 'all') {
         const res = await fetch('https://pokeapi.co/api/v2/pokemon?limit=1025&offset=0');
@@ -369,30 +624,61 @@
       }
     }
 
-    // ── Generation selection ──────────────────────────────────────────────────
+    // ── Generation selection ───────────────────────────────────────────────────
     document.querySelectorAll('.gen-btn').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const genId = btn.getAttribute('data-gen');
-        showScreen('loading-screen');
-        try {
-          pokemonPool = await fetchPokemonForGen(genId === 'all' ? 'all' : parseInt(genId));
-          startGame();
-        } catch (e) {
-          showScreen('gen-screen');
-          alert('Failed to load Pokemon data. Check your connection and try again.');
-        }
+      btn.addEventListener('click', () => {
+        selectedGen = btn.getAttribute('data-gen');
+        document.getElementById('diff-gen-label').textContent = GEN_LABELS[selectedGen] || '';
+        updateRecordDisplay();
+        showScreen('difficulty-screen');
       });
     });
 
-    // ── Sprite helpers ────────────────────────────────────────────────────────
+    // ── Difficulty screen interactions ─────────────────────────────────────────
+    document.querySelectorAll('.diff-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        selectedDifficulty = btn.getAttribute('data-diff');
+        updateRecordDisplay();
+      });
+    });
+
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        selectedMode = btn.getAttribute('data-mode');
+        updateRecordDisplay();
+      });
+    });
+
+    document.getElementById('diff-back').addEventListener('click', () => showScreen('gen-screen'));
+
+    document.getElementById('play-btn').addEventListener('click', async () => {
+      showScreen('loading-screen');
+      try {
+        if (!pokemonPool.length || pokemonPoolGen !== selectedGen) {
+          pokemonPool = await fetchPokemonForGen(selectedGen === 'all' ? 'all' : parseInt(selectedGen));
+          pokemonPoolGen = selectedGen;
+          evoMapCache = {};
+        }
+        startGame();
+      } catch (e) {
+        showScreen('difficulty-screen');
+        alert('Failed to load Pokemon data. Check your connection and try again.');
+      }
+    });
+
+    // ── Sprite helpers ─────────────────────────────────────────────────────────
     let _spriteImg = null;
     let _pixelSize = 6;
     let _pixelAnimFrame = null;
 
-    // Step 5 = max hints state (still pixelated); full reveal only on answer
     const PIXEL_STEPS = [6, 9, 13, 18, 24, 30];
+
     function getPixelSizeForStep(step) {
-      return PIXEL_STEPS[Math.min(step, MAX_REVEALS)];
+      return PIXEL_STEPS[Math.min(step, PIXEL_STEPS.length - 1)];
     }
 
     function drawPixelated(canvas, img, pixelSize) {
@@ -438,8 +724,7 @@
       if (_pixelAnimFrame) { cancelAnimationFrame(_pixelAnimFrame); _pixelAnimFrame = null; }
       _spriteImg = null;
       const canvas = document.getElementById('sprite-display');
-      const ctx = canvas.getContext('2d');
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
       const img = new Image();
       img.crossOrigin = 'anonymous';
       img.onload = () => {
@@ -458,22 +743,27 @@
         _pixelSize = getPixelSizeForStep(0);
         if (_spriteImg) drawPixelated(canvas, _spriteImg, _pixelSize);
       } else {
-        const step = Math.round(ratio * MAX_REVEALS);
+        const step = Math.round(ratio * (PIXEL_STEPS.length - 1));
         const targetSize = getPixelSizeForStep(step);
         if (_spriteImg) animatePixelTo(canvas, _spriteImg, targetSize, 400);
       }
     }
 
-    // ── Game logic ────────────────────────────────────────────────────────────
+    // ── Game logic ─────────────────────────────────────────────────────────────
     async function startGame() {
+      const diff = DIFFICULTIES[selectedDifficulty];
       const pool = [...pokemonPool];
       shuffle(pool);
-      const selected = pool.slice(0, QUESTIONS_N);
 
+      // For classic: pick 10; for infinite: use the whole shuffled pool
+      const selected = selectedMode === 'classic' ? pool.slice(0, QUESTIONS_N) : pool;
+
+      // Pre-fetch evo data for classic (all 10), or first batch for infinite
+      const toFetch = selectedMode === 'classic' ? selected : pool.slice(0, 40);
       const chainCache = {};
-      const evoMap = {};
 
-      await Promise.all(selected.map(async p => {
+      await Promise.all(toFetch.map(async p => {
+        if (evoMapCache[p.id] !== undefined) return;
         try {
           const specRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${p.id}`);
           const spec = await specRes.json();
@@ -485,116 +775,164 @@
             ids.push(parseInt(node.species.url.split('/').filter(Boolean).pop()));
             node.evolves_to.forEach(walk);
           }(chain.chain));
-          evoMap[p.id] = ids.filter(id => id !== p.id && pokemonPool.some(pp => pp.id === id));
+          evoMapCache[p.id] = ids.filter(id => id !== p.id && pokemonPool.some(pp => pp.id === id));
         } catch (_) {
-          evoMap[p.id] = [];
+          evoMapCache[p.id] = [];
         }
       }));
 
-      questions = selected.map(p => ({ id: p.id, name: p.name, choices: pickChoices(p, evoMap[p.id] || []) }));
+      questions = selected.map(p => ({ id: p.id, name: p.name, choices: null }));
       currentQ = 0;
       totalScore = 0;
+      correctCount = 0;
+      lives = diff.lives;
+
       showScreen('game');
       showQuestion();
     }
 
     function pickChoices(correct, evoRelatives = []) {
+      const diff = DIFFICULTIES[selectedDifficulty];
+      const numWrong = diff.choices - 1;
       const others = pokemonPool.filter(p => p.id !== correct.id);
       shuffle(others);
-      let wrong1 = others[0];
-      let wrong2 = others[1];
-      if (evoRelatives.length > 0 && Math.random() < 0.4) {
-        const relative = pokemonPool.find(p => evoRelatives.includes(p.id));
-        if (relative) {
-          if (Math.random() < 0.5) wrong1 = relative; else wrong2 = relative;
+
+      const wrong = [];
+      const usedIds = new Set([correct.id]);
+
+      if (diff.evoTrap === 'always' && evoRelatives.length > 0) {
+        const relatives = pokemonPool.filter(p => evoRelatives.includes(p.id));
+        shuffle(relatives);
+        for (const r of relatives) {
+          if (wrong.length >= numWrong) break;
+          if (!usedIds.has(r.id)) { wrong.push(r); usedIds.add(r.id); }
         }
+      } else if (diff.evoTrap === 'maybe' && evoRelatives.length > 0 && Math.random() < 0.4) {
+        const relative = pokemonPool.find(p => evoRelatives.includes(p.id));
+        if (relative) { wrong.push(relative); usedIds.add(relative.id); }
       }
-      return shuffle([correct, wrong1, wrong2]);
+
+      for (const p of others) {
+        if (wrong.length >= numWrong) break;
+        if (!usedIds.has(p.id)) { wrong.push(p); usedIds.add(p.id); }
+      }
+
+      return shuffle([correct, ...wrong]);
+    }
+
+    function updateLivesDisplay() {
+      const el = document.getElementById('lives-display');
+      el.textContent = selectedMode === 'infinite' ? '♥ '.repeat(lives).trim() : '';
     }
 
     function updateRoundCounter() {
-      const remaining = questions.length - currentQ;
-      document.getElementById('round-counter').textContent =
-        `Round ${currentQ + 1} of ${questions.length}`;
+      const el = document.getElementById('round-counter');
+      if (selectedMode === 'classic') {
+        el.textContent = `Round ${currentQ + 1} of ${questions.length}`;
+      } else {
+        el.textContent = `Aciertos: ${correctCount}`;
+      }
     }
 
     function showQuestion() {
+      const diff = DIFFICULTIES[selectedDifficulty];
+      answered = false;
+      revealStep = 0;
+
+      if (!questions[currentQ].choices) {
+        const p = questions[currentQ];
+        questions[currentQ].choices = pickChoices(p, evoMapCache[p.id] || []);
+      }
+
       const q = questions[currentQ];
-      answered = false; revealStep = 0;
 
       updateRoundCounter();
+      updateLivesDisplay();
       setSpriteForPokemon(q.id);
       document.getElementById('sprite-display').style.filter = 'grayscale(1)';
       setReveal(0);
 
-      document.querySelectorAll('.choice').forEach((btn, i) => {
-        const p = q.choices[i];
+      const choicesEl = document.getElementById('choices');
+      choicesEl.innerHTML = '';
+      q.choices.forEach(p => {
+        const btn = document.createElement('button');
+        btn.className = 'choice';
         btn.textContent = p.name;
         btn.setAttribute('data-id', p.id);
-        btn.className = 'choice';
-        btn.disabled = false;
+        btn.addEventListener('click', function () {
+          if (answered) return;
+          answered = true;
+          revealResult(parseInt(this.getAttribute('data-id')));
+        });
+        choicesEl.appendChild(btn);
       });
 
       const mb = document.getElementById('main-btn');
-      mb.textContent = 'Hints: 0/5';
-      mb.disabled = false;
+      mb.textContent = `Hints: 0/${diff.maxHints}`;
+      mb.disabled = diff.maxHints === 0;
       mb.onclick = onRevealClick;
 
-      document.getElementById('score-text').textContent = 'Score: ' + totalScore + 'p  •  +' + PTS_CORRECT + 'p if correct';
+      document.getElementById('score-text').textContent =
+        `Score: ${totalScore}p  •  +${diff.pts}p if correct`;
     }
 
     function onRevealClick() {
-      if (answered) return;
+      const diff = DIFFICULTIES[selectedDifficulty];
+      if (answered || revealStep >= diff.maxHints) return;
       revealStep++;
-      // Never pass ratio=1 here — full reveal only happens on answer
+
       const canvas = document.getElementById('sprite-display');
       const targetSize = getPixelSizeForStep(revealStep);
       if (_spriteImg) animatePixelTo(canvas, _spriteImg, targetSize, 400);
 
       const mb = document.getElementById('main-btn');
-      if (revealStep >= MAX_REVEALS) {
-        mb.textContent = 'Hints: 5/5';
-        mb.disabled = true;
-      } else {
-        mb.textContent = 'Hints: ' + revealStep + '/5';
-      }
-      const available = Math.max(0, PTS_CORRECT - revealStep * 10);
-      document.getElementById('score-text').textContent = 'Score: ' + totalScore + 'p  •  +' + available + 'p if correct';
+      mb.textContent = `Hints: ${revealStep}/${diff.maxHints}`;
+      mb.disabled = revealStep >= diff.maxHints;
+
+      const available = Math.max(0, diff.pts - revealStep * diff.hintPenalty);
+      document.getElementById('score-text').textContent =
+        `Score: ${totalScore}p  •  +${available}p if correct`;
     }
 
-    document.querySelectorAll('.choice').forEach(btn => {
-      btn.addEventListener('click', function () {
-        if (answered) return;
-        answered = true;
-        revealResult(parseInt(this.getAttribute('data-id')));
-      });
-    });
-
     function revealResult(chosenId) {
+      const diff = DIFFICULTIES[selectedDifficulty];
       answered = true;
       const q = questions[currentQ];
       const isCorrect = chosenId === q.id;
-      const earned = isCorrect ? Math.max(0, PTS_CORRECT - revealStep * 10) : PTS_WRONG;
+      const earned = isCorrect ? Math.max(0, diff.pts - revealStep * diff.hintPenalty) : 0;
       totalScore += earned;
+      if (isCorrect) correctCount++;
 
       setReveal(1);
       const cry = new Audio(`https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/${q.id}.ogg`);
       cry.volume = 0.05;
       cry.play().catch(() => {});
-      document.getElementById('score-text').textContent = 'Score: ' + totalScore + 'p  (+' + earned + 'p)';
+
+      if (selectedMode === 'infinite' && !isCorrect) {
+        lives--;
+        updateLivesDisplay();
+      }
+
+      document.getElementById('score-text').textContent = `Score: ${totalScore}p  (+${earned}p)`;
 
       document.querySelectorAll('.choice').forEach(btn => {
         const bid = parseInt(btn.getAttribute('data-id'));
         btn.disabled = true;
         if (bid === q.id) btn.classList.add('correct');
-        else if (chosenId && bid === chosenId) btn.classList.add('wrong');
+        else if (bid === chosenId) btn.classList.add('wrong');
         else btn.classList.add('dim');
       });
 
       const mb = document.getElementById('main-btn');
-      mb.textContent = 'NEXT';
       mb.disabled = false;
-      mb.onclick = nextQuestion;
+
+      if (selectedMode === 'infinite' && lives <= 0) {
+        mb.textContent = 'Ver resultado';
+        mb.onclick = showEndScreen;
+      } else {
+        mb.textContent = 'NEXT';
+        mb.onclick = nextQuestion;
+      }
     }
 
     function nextQuestion() {
@@ -604,13 +942,27 @@
     }
 
     function showEndScreen() {
-      const max = QUESTIONS_N * PTS_CORRECT;
-      const pct = Math.round(totalScore / max * 100);
+      const diff = DIFFICULTIES[selectedDifficulty];
+      const recordValue = selectedMode === 'classic' ? totalScore : correctCount;
+      const isNewRecord = saveRecord(recordValue);
+
+      let scoreDisplay, subDisplay;
+      if (selectedMode === 'classic') {
+        const max = QUESTIONS_N * diff.pts;
+        const pct = Math.round(totalScore / max * 100);
+        scoreDisplay = `${totalScore}p`;
+        subDisplay = `de ${max}p &mdash; ${pct}%`;
+      } else {
+        scoreDisplay = `${correctCount}`;
+        subDisplay = `aciertos &mdash; ${totalScore}p totales`;
+      }
+
       document.getElementById('game').innerHTML = `
         <div id="end-screen">
           <h2>Who's that<br>pokemon?</h2>
-          <p class="pts">${totalScore}p</p>
-          <p class="sub">out of ${max}p &mdash; ${pct}%</p>
+          <p class="pts">${scoreDisplay}</p>
+          <p class="sub">${subDisplay}</p>
+          ${isNewRecord ? '<p class="new-record">★ Nuevo récord ★</p>' : ''}
           <button id="main-btn" onclick="location.reload()">Play Again</button>
         </div>`;
     }
@@ -623,7 +975,6 @@
       return a;
     }
 
-    // Start at gen selection
     showScreen('gen-screen');
   </script>
 </body>
