@@ -578,7 +578,9 @@
       totalScore += earned;
 
       setReveal(1);
-      new Audio(`https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/${q.id}.ogg`).play().catch(() => {});
+      const cry = new Audio(`https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/${q.id}.ogg`);
+      cry.volume = 0.05;
+      cry.play().catch(() => {});
       document.getElementById('score-text').textContent = 'Score: ' + totalScore + 'p  (+' + earned + 'p)';
 
       document.querySelectorAll('.choice').forEach(btn => {
